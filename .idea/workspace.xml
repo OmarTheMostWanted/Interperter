@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2a3c1593-73b8-4615-a353-3fc7c4ac132f" name="Default Changelist" comment="" />
+    <list default="true" id="2a3c1593-73b8-4615-a353-3fc7c4ac132f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/scala/Interpreter/Main.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/scala/Interpreter/Test1.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scala/Interpreter/Test1.scala" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,10 +34,11 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/scala" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Global Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
@@ -42,7 +48,30 @@
       <recent name="$PROJECT_DIR$/src/main/scala" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="Interpreter.Main" />
+      <module name="Interperter" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Interpreter.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Scala REPL" type="ScalaScriptConsoleRunConfiguration" factoryName="Scala Console" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="Interperter" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="javaOptions" value="-Djline.terminal=NONE" />
+      <option name="myConsoleArgs" value="" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Test" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="Interperter" />
       <option name="allowRunningInParallel" value="false" />
@@ -63,9 +92,55 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test1.Desugar 5" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="Interperter" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" />
+      <option name="searchTest" value="Across module dependencies" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testClassPath" value="Interpreter.Test1" />
+      <option name="testName" value="Desugar 5" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test.Parse 5" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="Interperter" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" />
+      <option name="searchTest" value="Across module dependencies" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testClassPath" value="Interpreter.Test" />
+      <option name="testName" value="Parse 5" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="ScalaTest.Test" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Scala REPL.Scala REPL" />
+        <item itemvalue="ScalaTest.Test.Parse 5" />
+        <item itemvalue="ScalaTest.Test1.Desugar 5" />
+        <item itemvalue="ScalaTest.Test1.Desugar 5" />
       </list>
     </recent_temporary>
   </component>
@@ -96,6 +171,7 @@
     </option>
     <option name="modificationStamps">
       <map>
+        <entry key="$PROJECT_DIR$" value="3166506088064" />
         <entry key="$PROJECT_DIR$/build.sbt" value="3916911390" />
         <entry key="$PROJECT_DIR$/project/build.properties" value="1244562550" />
       </map>
@@ -112,6 +188,8 @@
       <option name="presentableId" value="Default" />
       <updated>1583163813636</updated>
       <workItem from="1583163815096" duration="158000" />
+      <workItem from="1583253049958" duration="837000" />
+      <workItem from="1583255623875" duration="4193000" />
     </task>
     <servers />
   </component>
@@ -127,9 +205,33 @@
       <screen x="0" y="525" width="1920" height="1080" />
     </state>
     <state x="424" y="619" width="1068" height="928" key="CommitChangelistDialog2/0.525.1920.1080/654.0.840.525@0.525.1920.1080" timestamp="1583164409306" />
+    <state width="1874" height="275" key="GridCell.Tab.0.bottom" timestamp="1583260218839">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1874" height="275" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1583260218839" />
+    <state width="1874" height="275" key="GridCell.Tab.0.center" timestamp="1583260218838">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1874" height="275" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1583260218838" />
+    <state width="1874" height="275" key="GridCell.Tab.0.left" timestamp="1583260218837">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1874" height="275" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1583260218837" />
+    <state width="1874" height="275" key="GridCell.Tab.0.right" timestamp="1583260218839">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state width="1874" height="275" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1583260218839" />
+    <state x="446" y="128" width="1024" height="859" key="SettingsEditor" timestamp="1583256807572">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="446" y="128" width="1024" height="859" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1583256807572" />
     <state x="558" y="798" width="800" height="542" key="Vcs.Push.Dialog.v2" timestamp="1583164449896">
       <screen x="0" y="525" width="1920" height="1080" />
     </state>
     <state x="558" y="798" width="800" height="542" key="Vcs.Push.Dialog.v2/0.525.1920.1080/654.0.840.525@0.525.1920.1080" timestamp="1583164449896" />
+    <state x="622" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1583255623590">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="622" y="380" key="com.intellij.ide.util.TipDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1583255623590" />
   </component>
 </project>
