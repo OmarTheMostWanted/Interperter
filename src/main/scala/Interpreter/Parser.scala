@@ -41,6 +41,9 @@ object Parser {
               case _ => ListExt(list.map(e => parse(e)))
             }
           }
+          case SSym("lambda") :: SList(List(i)) :: body  => {
+
+          }
 
           case SSym(s) :: e :: Nil => {
             if (ExprExt.unOps.contains(s)) UnOpExt(s, parse(e)) else throw new CustomParseException("Wrong operator:" + s)

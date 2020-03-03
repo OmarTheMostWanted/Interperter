@@ -12,3 +12,5 @@ case class NilV() extends Value
 
 case class ConsV(head: Value, tail: Value) extends Value
 
+case class FunV(f: FdC) extends Value
+
