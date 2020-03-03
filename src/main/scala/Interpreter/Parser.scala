@@ -41,8 +41,9 @@ object Parser {
               case _ => ListExt(list.map(e => parse(e)))
             }
           }
-          case SSym("lambda") :: SList(List(i)) :: body  => {
 
+          case SSym("lambda") :: SList(i) :: body :: Nil => {
+            FdExt( getIdentifierList(i) , parse(body))
           }
 
           case SSym(s) :: e :: Nil => {
@@ -54,8 +55,24 @@ object Parser {
           case _ => throw new CustomParseException("Wrong Operation format")
         }
       }
+      case SSym(s) => {
+        if(ExprExt.reservedWords.contains(s)) throw new CustomParseException("not allowed to use this name: " + s)
+        else IdExt(s)
+      }
       case _ => throw new CustomParseException("Wrong Syntax")
 
+    }
+
+  }
+
+  def getIdentifierList(list: List[SExpr]): List[String] = {
+    list match {
+      case Nil => Nil
+      case SSym(s) :: e => {
+        if (ExprExt.reservedWords.contains(s)) throw new CustomParseException("not allowed to use this name: " + s)
+        else s :: getIdentifierList(e)
+      }
+      case _ => throw new CustomParseException("wrong identifier list")
     }
   }
 

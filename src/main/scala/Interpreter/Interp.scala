@@ -54,6 +54,8 @@ object Interp {
           case _ => BoolV(false)
         }
       }
+
+      case FdC(l , body) => FunV(FdC(l , body))
       case UndefinedC() => throw new CustomInterpException("Undefined behavior")
     }
   }

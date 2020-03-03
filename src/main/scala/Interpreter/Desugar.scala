@@ -55,6 +55,10 @@ object Desugar {
         condExtDesugar(l)
       }
       case CondEExt(l, e) => condEExtDesugar(l, e)
+
+      case FdExt(l , b) => FdC(l , desugar(b))
+      case IdExt(c) => IdC(c)
+
       case _ => UndefinedC()
     }
 
