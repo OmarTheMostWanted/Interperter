@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2a3c1593-73b8-4615-a353-3fc7c4ac132f" name="Default Changelist" comment="hard coded ops">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/Interpreter/Interp.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/Interpreter/Interp.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/Interpreter/Parser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/Interpreter/Parser.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/scala/Interpreter/TestWeek3.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scala/Interpreter/TestWeek3.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,27 +53,7 @@
       <recent name="$PROJECT_DIR$/src/main/scala" />
     </key>
   </component>
-  <component name="RunManager" selected="ScalaTest.TestWeek3.nested let">
-    <configuration name="Test1" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
-      <module name="Interperter" />
-      <option name="allowRunningInParallel" value="false" />
-      <option name="testKind" value="Class" />
-      <option name="envs">
-        <map />
-      </option>
-      <option name="javaOptions" value="" />
-      <option name="jrePath" />
-      <option name="searchTest" value="Across module dependencies" />
-      <option name="showProgressMessages" value="true" />
-      <option name="testArgs" value="" />
-      <option name="testClassPath" value="Interpreter.Test1" />
-      <option name="useSbt" value="false" />
-      <option name="useUiWithSbt" value="false" />
-      <option name="workingDirectory" value="$PROJECT_DIR$" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="ScalaTest.TestWeek3.nested let desugare">
     <configuration name="TestWeek3" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="Interperter" />
       <option name="allowRunningInParallel" value="false" />
@@ -96,6 +74,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="TestWeek3.nested let desugare" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
+      <module name="Interperter" />
+      <option name="allowRunningInParallel" value="false" />
+      <option name="testKind" value="Class" />
+      <option name="envs">
+        <map />
+      </option>
+      <option name="javaOptions" value="" />
+      <option name="jrePath" />
+      <option name="searchTest" value="Across module dependencies" />
+      <option name="showProgressMessages" value="true" />
+      <option name="testArgs" value="" />
+      <option name="testClassPath" value="Interpreter.TestWeek3" />
+      <option name="testName" value="nested let desugare" />
+      <option name="useSbt" value="false" />
+      <option name="useUiWithSbt" value="false" />
+      <option name="workingDirectory" value="$PROJECT_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestWeek3.nested let" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true" show_console_on_std_err="false" show_console_on_std_out="false">
       <module name="Interperter" />
       <option name="allowRunningInParallel" value="false" />
@@ -109,7 +108,6 @@
       <option name="showProgressMessages" value="true" />
       <option name="testArgs" value="" />
       <option name="testClassPath" value="Interpreter.TestWeek3" />
-      <option name="testName" value="nested let" />
       <option name="useSbt" value="false" />
       <option name="useUiWithSbt" value="false" />
       <option name="workingDirectory" value="$PROJECT_DIR$" />
@@ -130,7 +128,6 @@
       <option name="showProgressMessages" value="true" />
       <option name="testArgs" value="" />
       <option name="testClassPath" value="Interpreter.TestWeek3" />
-      <option name="testName" value="shadowing 1" />
       <option name="useSbt" value="false" />
       <option name="useUiWithSbt" value="false" />
       <option name="workingDirectory" value="$PROJECT_DIR$" />
@@ -151,7 +148,6 @@
       <option name="showProgressMessages" value="true" />
       <option name="testArgs" value="" />
       <option name="testClassPath" value="Interpreter.TestWeek3" />
-      <option name="testName" value="test 1" />
       <option name="useSbt" value="false" />
       <option name="useUiWithSbt" value="false" />
       <option name="workingDirectory" value="$PROJECT_DIR$" />
@@ -161,11 +157,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="ScalaTest.TestWeek3.nested let desugare" />
         <item itemvalue="ScalaTest.TestWeek3.nested let" />
         <item itemvalue="ScalaTest.TestWeek3" />
         <item itemvalue="ScalaTest.TestWeek3.shadowing 1" />
         <item itemvalue="ScalaTest.TestWeek3.test 1" />
-        <item itemvalue="ScalaTest.Test1" />
       </list>
     </recent_temporary>
   </component>
@@ -296,38 +292,38 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="188" y="122" width="1536" height="886" key="DiffContextDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1583418216116" />
-    <state width="1874" height="340" key="GridCell.Tab.0.bottom" timestamp="1583439816123">
+    <state width="1874" height="340" key="GridCell.Tab.0.bottom" timestamp="1583441387459">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1583439816123" />
-    <state width="1874" height="340" key="GridCell.Tab.0.center" timestamp="1583439816121">
+    <state width="1874" height="340" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1583441387459" />
+    <state width="1874" height="340" key="GridCell.Tab.0.center" timestamp="1583441387457">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1583439816121" />
-    <state width="1874" height="340" key="GridCell.Tab.0.left" timestamp="1583439816120">
+    <state width="1874" height="340" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1583441387457" />
+    <state width="1874" height="340" key="GridCell.Tab.0.left" timestamp="1583441387456">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1583439816120" />
-    <state width="1874" height="340" key="GridCell.Tab.0.right" timestamp="1583439816122">
+    <state width="1874" height="340" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1583441387456" />
+    <state width="1874" height="340" key="GridCell.Tab.0.right" timestamp="1583441387458">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1583439816122" />
-    <state width="1874" height="340" key="GridCell.Tab.1.bottom" timestamp="1583439816127">
+    <state width="1874" height="340" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1583441387458" />
+    <state width="1874" height="340" key="GridCell.Tab.1.bottom" timestamp="1583441387462">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1583439816127" />
-    <state width="1874" height="340" key="GridCell.Tab.1.center" timestamp="1583439816125">
+    <state width="1874" height="340" key="GridCell.Tab.1.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1583441387462" />
+    <state width="1874" height="340" key="GridCell.Tab.1.center" timestamp="1583441387460">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1583439816125" />
-    <state width="1874" height="340" key="GridCell.Tab.1.left" timestamp="1583439816123">
+    <state width="1874" height="340" key="GridCell.Tab.1.center/0.27.1920.1053@0.27.1920.1053" timestamp="1583441387460" />
+    <state width="1874" height="340" key="GridCell.Tab.1.left" timestamp="1583441387460">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1583439816123" />
-    <state width="1874" height="340" key="GridCell.Tab.1.right" timestamp="1583439816126">
+    <state width="1874" height="340" key="GridCell.Tab.1.left/0.27.1920.1053@0.27.1920.1053" timestamp="1583441387460" />
+    <state width="1874" height="340" key="GridCell.Tab.1.right" timestamp="1583441387461">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="340" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1583439816126" />
+    <state width="1874" height="340" key="GridCell.Tab.1.right/0.27.1920.1053@0.27.1920.1053" timestamp="1583441387461" />
     <state x="751" y="226" width="409" height="692" key="RollbackChangesDialog" timestamp="1583260702961">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
@@ -368,13 +364,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="scala-line">
           <url>file://$PROJECT_DIR$/src/test/scala/Interpreter/TestWeek3.scala</url>
-          <line>83</line>
+          <line>89</line>
           <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="scala-line">
-          <url>file://$PROJECT_DIR$/src/main/scala/Interpreter/Interp.scala</url>
-          <line>5</line>
-          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -382,7 +373,8 @@
       <configuration name="ScalaTestRunConfiguration">
         <watch expression="sexpr" language="Scala" />
         <watch expression="this" />
-        <watch expression="f" />
+        <watch expression="f" language="Scala" />
+        <watch expression="e" />
       </configuration>
     </watches-manager>
   </component>
