@@ -26,4 +26,10 @@ class TestWeek3 extends FunSuite{
     }
   }
 
+  test("app 1"){
+    assertResult(NumV(2)){
+      imLazy("((lambda (y) (+ y y) ) 1)")
+    }
+  }
+
 }

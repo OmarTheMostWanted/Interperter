@@ -59,6 +59,8 @@ object Desugar {
       case FdExt(l , b) => FdC(l , desugar(b))
       case IdExt(c) => IdC(c)
 
+      case AppExt(f , args) => AppC(desugar(f) , args.map(e => desugar(e)))
+
       case _ => UndefinedC()
     }
 

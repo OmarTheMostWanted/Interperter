@@ -43,7 +43,7 @@ object Parser {
           }
 
           case SSym("lambda") :: SList(i) :: body :: Nil => {
-            FdExt( getIdentifierList(i) , parse(body))
+            FdExt(getIdentifierList(i), parse(body))
           }
 
           case SSym(s) :: e :: Nil => {
@@ -52,11 +52,20 @@ object Parser {
           case SSym(s) :: l :: r :: Nil => {
             if (ExprExt.binOps.contains(s)) BinOpExt(s, parse(l), parse(r)) else throw new CustomParseException("Wrong operator:" + s)
           }
+
+          case fun :: iden => AppExt(parse(fun), iden.map(e => parse(e)))
+          //          case fun :: iden => {
+          //            parse(fun) match {
+          //              case FdExt(iden, body) => AppExt(parse(fun), iden.map(e => parse(e)))
+          //              case _ => throw new CustomParseException("Calling not a function")
+          //            }
+          //          }
+
           case _ => throw new CustomParseException("Wrong Operation format")
         }
       }
       case SSym(s) => {
-        if(ExprExt.reservedWords.contains(s)) throw new CustomParseException("not allowed to use this name: " + s)
+        if (ExprExt.reservedWords.contains(s)) throw new CustomParseException("not allowed to use this name: " + s)
         else IdExt(s)
       }
       case _ => throw new CustomParseException("Wrong Syntax")
