@@ -16,3 +16,15 @@ abstract class InterpException(msg: String = null) extends Exception
 
 case class CustomInterpException(msg: String = null) extends InterpException(msg)
 
+case class NotImplementedException(s: String) extends RuntimeException(s)
+
+case class ParseExceptionn(string: String) extends ParseException
+
+case class NotCatchedInParse(string: String) extends ParseException("this wasn't catched in " + string)
+
+case class LetErrorParse(string: String) extends ParseException("this wasn't catched in " + string)
+
+case class InterpExceptionn(string: String) extends InterpException(string)
+
+case class DesugarExceptionn(string: String) extends DesugarException
+

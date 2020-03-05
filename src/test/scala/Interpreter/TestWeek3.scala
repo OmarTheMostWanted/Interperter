@@ -96,9 +96,9 @@ class TestWeek3 extends FunSuite {
 
   test("zyad") {
 
-    assertResult(NumV(11)) {
-      interp(desugar(parse("(((lambda (a b) (lambda (a) (+ a b))) 1 5 ) 6 )")))
-    }
+    //    assertResult(NumV(11)) {
+    //      interp(desugar(parse("(((lambda (a b) (lambda (a) (+ a b))) 1 5 ) 6 )")))
+    //    }
 
     //This one ex2
     assertResult(FdExt((List("x", "y", "z")), NilExt())) {
