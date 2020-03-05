@@ -72,11 +72,11 @@ class TestWeek3 extends FunSuite {
     }
   }
 
-  //  test("test 1"){
-  //    assertResult(NumV(1)){
-  //      imLazy("(  (   (lambda (y) (lambda (x) (f x)))  1   )  2   )")
-  //   }
-  //  }
+  test("test 1") {
+    assertResult(NumV(1)) {
+      imLazy("(  (   (lambda (y) (lambda (x) (f x)))  1   )  2   )")
+    }
+  }
 
   test("nested let") {
     //    assertResult(NumV(4)) {
@@ -88,9 +88,9 @@ class TestWeek3 extends FunSuite {
       desugar(parse("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))"))
     }
 
-    //    assertResult(NumV(40)) {
-    //      interp(desugar(parse("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))")))
-    //    }
+    assertResult(NumV(40)) {
+      interp(desugar(parse("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))")))
+    }
   }
 
 

@@ -22,7 +22,7 @@ object Interp {
 
     case IsNilC(x) => interp(x) match {
       case NilV() => BoolV(true)
-      case ConsV(_, _) => BoolV(false)
+      case ConsV(any, b) => BoolV(false)
       case _ => throw InterpExceptionn("ERROR")
     }
 
@@ -38,15 +38,13 @@ object Interp {
 
     case IsListC(x) => interp(x) match {
       case NilV() => BoolV(true)
-      case ConsV(_, _) => BoolV(true)
+      case ConsV(any, b) => BoolV(true)
       case _ => BoolV(false)
     }
 
     case FdC(a, b) => FunV(FdC(a, b))
-
     case AppC(afunc, args) => interp(afunc) match {
       case FunV(FdC(param, body)) => subst(body, param, args)
-
       case _ => throw InterpExceptionn("AppC interp error")
     }
 
@@ -55,51 +53,27 @@ object Interp {
   }
 
   def subst(e: ExprC, x: List[String], by: List[ExprC]): Value = e match {
-
+    case ValC(a) => a
     case NumC(n) => NumV(n)
     case PlusC(e1, e2) => NumV(intValue(subst(e1, x, by)) + intValue(subst(e2, x, by)))
     case MultC(e1, e2) => NumV(intValue(subst(e1, x, by)) * intValue(subst(e2, x, by)))
     case EqNumC(e1, e2) => BoolV(intValue(subst(e1, x, by)) == intValue(subst(e2, x, by)))
     case LtC(e1, e2) => BoolV(intValue(subst(e1, x, by)) < intValue(subst(e2, x, by)))
+    case AppC(afunc, args) => interp(AppC(ValC(subst(afunc, x, by)), args.map((s: ExprC) => ValC(subst(s, x, by)))))
     case FdC(y, e1) => {
       if (x.contains(y)) {
-
         FunV(FdC(y, e1))
+      } else {
+        FunV(FdC(y, ValC(subst(e1, x, by))))
       }
-      else {
-        // println("1 / body is " + e + " x is " + x + " by is " + by )
-        FunV(FdC(y, substSpecial(e1, x, by)))
-      }
+
     }
-    case AppC(afunc, args) => {
-      interp(AppC(substSpecial(afunc, x, by), args.map((s: ExprC) => substSpecial(s, x, by))))
+    case IdC(y) => if (x.contains(y)) {
+      // println(x + " " + by )
+      interp(by.apply(x.lastIndexOf(y)))
+    } else {
+      interp(IdC(y))
     }
-    case IdC(y) => if (x.contains(y)) interp(by.apply(x.lastIndexOf(y))) else interp(IdC(y))
-  }
-
-  def substSpecial(e: ExprC, x: List[String], by: List[ExprC]): ExprC = e match {
-
-    case NumC(n) => NumC(n)
-    case PlusC(e1, e2) => NumC(intValue(subst(e1, x, by)) + intValue(subst(e2, x, by)))
-    case MultC(e1, e2) => NumC(intValue(subst(e1, x, by)) * intValue(subst(e2, x, by)))
-    case EqNumC(e1, e2) => EqNumC(substSpecial(e1, x, by), substSpecial(e2, x, by))
-    case LtC(e1, e2) => LtC(substSpecial(e1, x, by), substSpecial(e2, x, by))
-    // case FdC(y,e1) => {
-    //   if(x.contains(y)) {
-
-    //     FunV(FdC(y,e1))
-    //   }
-    //   else {
-    //     // println("1 / body is " + e + " x is " + x + " by is " + by )
-    //     FunV(FdC(y,substSpecial(e1,x,by)))
-    //   }
-    // }
-    // case AppC(afunc,args) => afunc match {
-    //   case FdC(param,body) => subst( body , param , args )
-    //   // case IdC(name) => args
-    //   case _ => throw InterpExceptionn("AppC subst error")
-    // }
-    case IdC(y) => if (x.contains(y)) by.apply(x.lastIndexOf(y)) else IdC(y)
   }
 
   def intValue(v: Value): Int = v match {
