@@ -72,25 +72,26 @@ class TestWeek3 extends FunSuite {
     }
   }
 
-  //  test("test 1"){
-  //    assertResult(NumV(1)){
-  //      imLazy("(  (   (lambda (y) (lambda (x) (f x)))  1   )  2   )")
-  //   }
-  //  }
+  test("test 1") {
+    assertResult(NumV(1)) {
+      imLazy("(  (   (lambda (y) (lambda (x) (f x)))  1   )  2   )")
+    }
+  }
 
   test("nested let") {
-    //    assertResult(NumV(4)) {
-    //      imLazy("(let (double (lambda (x) (+ x x)))  (let (quadruple (lambda (x) (double (double x))))   (quadruple 1)))")
-    //    }
+
+    assertResult(NumV(40)) {
+      imLazy("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))")
+    }
 
 
     assertResult(AppC(FdC(List("double"), AppC(FdC(List("quadruple"), AppC(IdC("quadruple"), List(NumC(10)))), List(FdC(List("x"), AppC(IdC("double"), List(AppC(IdC("double"), List(IdC("x"))))))))), List(FdC(List("x"), PlusC(IdC("x"), IdC("x")))))) {
       desugar(parse("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))"))
     }
 
-    //    assertResult(NumV(40)) {
-    //      interp(desugar(parse("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))")))
-    //    }
+    assertResult(NumV(40)) {
+      interp(desugar(parse("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))")))
+    }
   }
 
 

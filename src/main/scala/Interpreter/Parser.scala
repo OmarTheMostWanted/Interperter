@@ -46,9 +46,9 @@ object Parser {
             FdExt(getIdentifierList(i), parse(body))
           }
 
-          case SSym("let") :: bindings :: e :: Nil => {
+          case SSym("let") :: SList(bindings) :: e :: Nil => {
             bindings match {
-              case SList(l) => LetExt(creatLetBindExtList(l), parse(e))
+              case l :: _ => LetExt(bindings.map((d: SExpr) => createLetBindExt(d)), parse(e))
               case _ => throw CustomParseException("no bindings")
             }
           }
@@ -105,10 +105,26 @@ object Parser {
 
   }
 
+
+  def createLetBindExt(s: SExpr): LetBindExt = {
+    s match {
+      case SList(y) => y match {
+        case a :: List(b) => LetBindExt(getStringFromIdExt(a), parse(b))
+        case _ => throw CustomParseException("not a name")
+      }
+      case _ => throw CustomParseException("wrong let format")
+    }
+  }
+
+  def getStringFromIdExt(s: SExpr): String = parse(s) match {
+    case IdExt(a) => a
+    case _ => throw CustomParseException("Not IdExt")
+  }
+
   def creatLetBindExtList(bindings: List[SExpr]): List[LetBindExt] = {
     bindings match {
       case Nil => throw CustomParseException("empty identifier list")
-      case SList(SSym(s) :: e :: Nil) :: Nil => {
+      case SSym(s) :: e :: Nil => {
         if (!ExprExt.reservedWords.contains(s)) LetBindExt(s, parse(e)) :: Nil
         else throw CustomParseException("name not allowed")
       }

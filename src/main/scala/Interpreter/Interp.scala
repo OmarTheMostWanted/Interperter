@@ -4,6 +4,8 @@ package Interpreter
 object Interp {
   def interp(e: ExprC): Value = {
     e match {
+      case ValC(v) => v
+
       case NumC(n) => NumV(n)
       case TrueC() => BoolV(true)
       case FalseC() => BoolV(false)
@@ -60,7 +62,7 @@ object Interp {
       case AppC(f, args) => {
         interp(f) match {
           case FunV(FdC(params, body)) => {
-            interp(substitute(body, params, args))
+            interp(substitute(body, params, args.map(e => interp(e))))
           }
           case _ => throw CustomInterpException("not a function")
         }
@@ -69,7 +71,7 @@ object Interp {
     }
   }
 
-  def substitute(function: ExprC, params: List[String], args: List[ExprC]): ExprC = {
+  def substitute(function: ExprC, params: List[String], args: List[Value]): ExprC = {
     function match {
       case NumC(n) => NumC(n)
       case TrueC() => TrueC()
@@ -92,16 +94,15 @@ object Interp {
       case IdC(s) => {
 
         if (params.contains(s)) {
-          args(params.indexOf(s))
+          ValC(args(params.indexOf(s)))
         }
-
         else IdC(s)
-
       }
       case FdC(params1, body1) => {
         if (params1.equals(params)) FdC(params1, body1)
         else FdC(params1, substitute(body1, params1, args))
       }
+      case _ => throw CustomInterpException("wrong subst type")
     }
   }
 
