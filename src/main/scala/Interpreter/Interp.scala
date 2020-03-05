@@ -13,7 +13,7 @@ object Interp {
         interp(c) match {
           case BoolV(true) => interp(t)
           case BoolV(false) => interp(e)
-          case _ => throw new CustomInterpException("condition does not evaluate to boolean")
+          case _ => throw CustomInterpException("condition does not evaluate to boolean")
         }
       }
       case EqNumC(l, r) => {
@@ -29,14 +29,14 @@ object Interp {
       case HeadC(e) => {
         interp(e) match {
           case ConsV(l, r) => l
-          case _ => throw new CustomInterpException("head with not list")
+          case _ => throw CustomInterpException("head with not list")
         }
       }
 
       case TailC(e) => {
         interp(e) match {
           case ConsV(l, r) => r
-          case _ => throw new CustomInterpException("tail with not list")
+          case _ => throw CustomInterpException("tail with not list")
         }
       }
 
@@ -44,7 +44,7 @@ object Interp {
         interp(e) match {
           case NilV() => BoolV(true)
           case ConsV(h, t) => BoolV(false)
-          case _ => throw new CustomInterpException("is-nil with not list")
+          case _ => throw CustomInterpException("is-nil with not list")
         }
       }
       case IsListC(e) => {
@@ -56,15 +56,16 @@ object Interp {
       }
 
       case FdC(l, body) => FunV(FdC(l, body))
+
       case AppC(f, args) => {
         interp(f) match {
           case FunV(FdC(params, body)) => {
             interp(substitute(body, params, args))
           }
-          case _ => throw new CustomInterpException("not a function")
+          case _ => throw CustomInterpException("not a function")
         }
       }
-      case UndefinedC() => throw new CustomInterpException("Undefined behavior")
+      case UndefinedC() => throw CustomInterpException("Undefined behavior")
     }
   }
 
@@ -84,7 +85,7 @@ object Interp {
       case TailC(e) => TailC(substitute(e, params, args))
       case IsNilC(e) => IsNilC(substitute(e, params, args))
       case IsListC(e) => IsListC(substitute(e, params, args))
-      case UndefinedC() => throw new CustomInterpException("Undefined function")
+      case UndefinedC() => throw CustomInterpException("Undefined function")
 
       case AppC(f1, args1) => AppC(substitute(f1, params, args), args1.map(e => substitute(e, params, args)))
 
@@ -108,7 +109,7 @@ object Interp {
   def getIntValue(v: Value): Int = {
     v match {
       case NumV(n) => n
-      case _ => throw new CustomInterpException("Not a number")
+      case _ => throw CustomInterpException("Not a number")
     }
   }
 }
