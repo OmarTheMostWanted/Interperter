@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2a3c1593-73b8-4615-a353-3fc7c4ac132f" name="Default Changelist" comment="fixed exceptions&#10;still need to fix name shadowing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/Interpreter/Desugar.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/Interpreter/Desugar.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/Interpreter/Exceptions.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/Interpreter/Exceptions.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/scala/Interpreter/Interp.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/Interpreter/Interp.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/scala/Interpreter/Parser.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/scala/Interpreter/Parser.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/scala/Interpreter/TestWeek3.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scala/Interpreter/TestWeek3.scala" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +148,6 @@
       <option name="showProgressMessages" value="true" />
       <option name="testArgs" value="" />
       <option name="testClassPath" value="Interpreter.TestWeek3" />
-      <option name="testName" value="zyad" />
       <option name="useSbt" value="false" />
       <option name="useUiWithSbt" value="false" />
       <option name="workingDirectory" value="$PROJECT_DIR$" />
@@ -163,10 +158,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="ScalaTest.TestWeek3.lambda 4" />
+        <item itemvalue="ScalaTest.TestWeek3.lambda 4" />
         <item itemvalue="ScalaTest.TestWeek3.zyad" />
         <item itemvalue="ScalaTest.TestWeek3" />
         <item itemvalue="ScalaTest.Test1" />
-        <item itemvalue="ScalaTest.Test" />
       </list>
     </recent_temporary>
   </component>
@@ -197,7 +192,7 @@
     </option>
     <option name="modificationStamps">
       <map>
-        <entry key="$PROJECT_DIR$" value="3166506088064" />
+        <entry key="$PROJECT_DIR$" value="3166867957282" />
         <entry key="$PROJECT_DIR$/build.sbt" value="3916911390" />
         <entry key="$PROJECT_DIR$/project/build.properties" value="1244562550" />
       </map>
@@ -296,22 +291,22 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="188" y="94" width="1536" height="886" key="DiffContextDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1583431699395" />
-    <state width="1874" height="275" key="GridCell.Tab.0.bottom" timestamp="1583432221159">
+    <state width="1874" height="275" key="GridCell.Tab.0.bottom" timestamp="1583434225631">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="275" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1583432221159" />
-    <state width="1874" height="275" key="GridCell.Tab.0.center" timestamp="1583432221157">
+    <state width="1874" height="275" key="GridCell.Tab.0.bottom/0.27.1920.1053@0.27.1920.1053" timestamp="1583434225631" />
+    <state width="1874" height="275" key="GridCell.Tab.0.center" timestamp="1583434225629">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="275" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1583432221157" />
-    <state width="1874" height="275" key="GridCell.Tab.0.left" timestamp="1583432221157">
+    <state width="1874" height="275" key="GridCell.Tab.0.center/0.27.1920.1053@0.27.1920.1053" timestamp="1583434225629" />
+    <state width="1874" height="275" key="GridCell.Tab.0.left" timestamp="1583434225628">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="275" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1583432221157" />
-    <state width="1874" height="275" key="GridCell.Tab.0.right" timestamp="1583432221158">
+    <state width="1874" height="275" key="GridCell.Tab.0.left/0.27.1920.1053@0.27.1920.1053" timestamp="1583434225628" />
+    <state width="1874" height="275" key="GridCell.Tab.0.right" timestamp="1583434225630">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state width="1874" height="275" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1583432221158" />
+    <state width="1874" height="275" key="GridCell.Tab.0.right/0.27.1920.1053@0.27.1920.1053" timestamp="1583434225630" />
     <state width="1874" height="340" key="GridCell.Tab.1.bottom" timestamp="1583430663168">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
