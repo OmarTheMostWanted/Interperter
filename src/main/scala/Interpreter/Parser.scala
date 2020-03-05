@@ -53,17 +53,46 @@ object Parser {
             }
           }
 
-          case SSym(s) :: e :: Nil => {
-            if (ExprExt.unOps.contains(s)) UnOpExt(s, parse(e)) else throw CustomParseException("Wrong operator:" + s)
-          } // check s if its correct
-          case SSym(s) :: l :: r :: Nil => {
-            if (ExprExt.binOps.contains(s)) BinOpExt(s, parse(l), parse(r)) else throw CustomParseException("Wrong operator:" + s)
+          case SSym("-") :: y => y match {
+            case a :: Nil => UnOpExt("-", parse(a))
+            case a :: b :: Nil => BinOpExt("-", parse(a), parse((b)))
+            case _ => throw CustomParseException("Wrong op use")
           }
+
+          case SSym("not") :: a :: Nil => UnOpExt("not", parse(a))
+
+          case SSym("+") :: a :: b :: Nil => BinOpExt("+", parse(a), parse((b)))
+
+          case SSym("*") :: a :: b :: Nil => BinOpExt("*", parse(a), parse((b)))
+
+          case SSym("and") :: a :: b :: Nil => BinOpExt("and", parse(a), parse((b)))
+
+          case SSym("or") :: a :: b :: Nil => BinOpExt("or", parse(a), parse((b)))
+
+          case SSym("num=") :: a :: b :: Nil => BinOpExt("num=", parse(a), parse((b)))
+
+          case SSym("num<") :: a :: b :: Nil => BinOpExt("num<", parse(a), parse((b)))
+
+          case SSym("num>") :: a :: b :: Nil => BinOpExt("num>", parse(a), parse((b)))
+
+          case SSym("cons") :: a :: b :: Nil => BinOpExt("cons", parse(a), parse(b))
+
+
+          case SSym("head") :: a :: Nil => UnOpExt("head", parse(a))
+
+          case SSym("tail") :: a :: Nil => UnOpExt("tail", parse((a)))
+
+
+          case SSym("is-nil") :: a :: Nil => UnOpExt("is-nil", parse((a)))
+
+
+          case SSym("is-list") :: a :: Nil => UnOpExt("is-list", parse((a)))
+
 
           case fun :: iden => AppExt(parse(fun), iden.map(e => parse(e)))
 
 
-          case _ => throw new CustomParseException("Wrong Operation format")
+          case _ => throw CustomParseException("Wrong Operation format")
         }
       }
       case SSym(s) => {
