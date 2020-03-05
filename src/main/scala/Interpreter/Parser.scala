@@ -46,6 +46,10 @@ object Parser {
             FdExt(getIdentifierList(i), parse(body))
           }
 
+          case SSym("let") :: SList(bindings) :: e :: Nil => {
+            LetExt(creatLetBindExtList(bindings), parse(e))
+          }
+
           case SSym(s) :: e :: Nil => {
             if (ExprExt.unOps.contains(s)) UnOpExt(s, parse(e)) else throw new CustomParseException("Wrong operator:" + s)
           } // check s if its correct
@@ -72,6 +76,21 @@ object Parser {
 
     }
 
+  }
+
+  def creatLetBindExtList(bindings: List[SExpr]): List[LetBindExt] = {
+    bindings match {
+      case Nil => throw new CustomParseException("empty identifier list")
+      case SList(SSym(s) :: e :: Nil) :: Nil => {
+        if (!ExprExt.reservedWords.contains(s)) LetBindExt(s, parse(e)) :: Nil
+        else throw new CustomInterpException("name not allowed")
+      }
+      case SList(SSym(s) :: e :: Nil) :: r => {
+        if (!ExprExt.reservedWords.contains(s)) LetBindExt(s, parse(e)) :: creatLetBindExtList(r)
+        else throw new CustomInterpException("name not allowed")
+      }
+      case _ => throw new CustomInterpException("wrong bindings")
+    }
   }
 
   def getIdentifierList(list: List[SExpr]): List[String] = {

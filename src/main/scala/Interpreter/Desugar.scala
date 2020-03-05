@@ -56,10 +56,18 @@ object Desugar {
       }
       case CondEExt(l, e) => condEExtDesugar(l, e)
 
-      case FdExt(l , b) => FdC(l , desugar(b))
+      case FdExt(l, b) => FdC(l, desugar(b))
       case IdExt(c) => IdC(c)
 
-      case AppExt(f , args) => AppC(desugar(f) , args.map(e => desugar(e)))
+      case AppExt(f, args) => AppC(desugar(f), args.map(e => desugar(e)))
+
+      case LetExt(binds, body) => {
+        AppC(FdC(binds.map(e => e match {
+          case LetBindExt(s, e) => s
+        }), desugar(body)), binds.map(e => e match {
+          case LetBindExt(s, e) => desugar(e)
+        }))
+      }
 
       case _ => UndefinedC()
     }
