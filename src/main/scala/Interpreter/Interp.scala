@@ -107,11 +107,13 @@ object Interp {
       //        } else FdC(params1, substitute(body1, params1, args))
       //      }
 
-      case FdC(params1, body1) => {
-        if (params1.equals(params)) {
-          FdC(params1, body1)
-        } else FdC(params1, substitute(body1, binds, params, args))
-      }
+      //      case FdC(params1, body1) => {
+      //        if (params1.equals(params)) {
+      //          FdC(params1, body1)
+      //        } else FdC(params1, substitute(body1, binds, params, args))
+      //      }
+
+      case FdC(params1, body) => FdC(params1, substitute(body, binds.filter(x => !params1.contains(x.name)), params, args))
 
       case _ => throw CustomInterpException("wrong subst type")
     }
