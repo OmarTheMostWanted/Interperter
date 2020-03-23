@@ -42,3 +42,5 @@ case class FdC(params: List[String], body: ExprC) extends ExprC
 
 case class ValC(v: Value) extends ExprC // note: no corresponding surface syntax
 
+case class Closed(e: ExprC)
+

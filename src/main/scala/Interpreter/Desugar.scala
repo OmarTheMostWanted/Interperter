@@ -61,11 +61,11 @@ object Desugar {
       case AppExt(f, args) => AppC(desugar(f), args.map(e => desugar(e)))
 
       case LetExt(binds, body) => {
-        AppC(FdC(binds.map(e => e match {
+        AppC(FdC(binds.map {
           case LetBindExt(s, e) => s
-        }), desugar(body)), binds.map(e => e match {
+        }, desugar(body)), binds.map {
           case LetBindExt(s, e) => desugar(e)
-        }))
+        })
       }
 
       case _ => UndefinedC()

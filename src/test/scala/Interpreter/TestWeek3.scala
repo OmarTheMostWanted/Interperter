@@ -73,7 +73,7 @@ class TestWeek3 extends FunSuite {
   }
 
   test("test 1") {
-    assertResult(NumV(1)) {
+    intercept[InterpException] {
       imLazy("(  (   (lambda (y) (lambda (x) (f x)))  1   )  2   )")
     }
   }
@@ -107,7 +107,6 @@ class TestWeek3 extends FunSuite {
       interp(desugar(parse("(((lambda (a b) (lambda (a) (+ a b))) 1 5 ) 6 )")))
     }
 
-    //This one ex2
     assertResult(FdExt((List("x", "y", "z")), NilExt())) {
       parse("(lambda (x y z ) nil)")
     }
@@ -137,6 +136,62 @@ class TestWeek3 extends FunSuite {
       BinOpExt("+", IdExt("x"), NumExt(5)), NumExt(13)),
       NumExt(0), NumExt(1)))) {
       parse("(lambda (x) (if (num= (+ x 5) 13) 0 1 ) )")
+    }
+  }
+
+  test("very simple nested lambda 5") {
+    assertResult(FunV(FdC(List("z"), FdC(List("x"), IdC("x"))))) {
+      imLazy("(lambda (z) (lambda (x) x))")
+    }
+  }
+
+  test("lambda with no parameters") {
+    assertResult(FunV(FdC(List("x"), NumC(1)))) {
+      imLazy("(lambda (x) 1)")
+    }
+  }
+
+  test("complex app") {
+    assertResult(NumV(40)) {
+      imLazy("( (lambda (x) (+ x 1)) 39)")
+    }
+  }
+
+  test("complex app 2") {
+    assertResult(NumV(1)) {
+      imLazy("((lambda (x) (if (num= (+ x 5) 13) 0 1 ) ) 0)")
+    }
+  }
+
+  test("complex app 3") {
+    assertResult(NumV(2)) {
+      imLazy("((lambda (x)  (x 1))" +
+        " (lambda (z) (+ z 1)))")
+    }
+  }
+
+  test("shadow 1") {
+    assertResult(NumV(1)) {
+      imLazy("((lambda (x)  ((lambda (x)  x) 1 )  ) 2)")
+    }
+  }
+
+
+  test("shadow 2") {
+    assertResult(NumV(1)) {
+      imLazy("((lambda (x y)  ((lambda (x y)  y) 2 1 )  ) 2 3)")
+    }
+  }
+
+  test("shadow 3") {
+    assertResult(NumV(1)) {
+      imLazy("((lambda (x x)  ((lambda (x)  x) 1 )  ) 1 2)")
+    }
+  }
+
+  test("same parameter name") {
+    assertResult(NumV(1)) {
+      imLazy("((lambda (x x) x)  1 2 )")
     }
   }
 
