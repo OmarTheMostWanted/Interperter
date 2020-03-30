@@ -1,4 +1,4 @@
-package Interpreter
+package EnvironmentBasedInterprete
 
 object Interp {
   def interp(e: ExprC): Value = {

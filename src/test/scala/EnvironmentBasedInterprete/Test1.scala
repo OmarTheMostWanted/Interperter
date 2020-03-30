@@ -1,4 +1,4 @@
-package Interpreter
+package EnvironmentBasedInterprete
 
 import org.scalatest.FunSuite
 

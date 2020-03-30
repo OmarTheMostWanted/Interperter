@@ -1,4 +1,4 @@
-package Interpreter
+package EnvironmentBasedInterprete
 
 
 import scala.util.parsing.combinator.JavaTokenParsers
