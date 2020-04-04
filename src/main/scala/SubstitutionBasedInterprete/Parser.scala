@@ -43,12 +43,27 @@ object Parser {
           }
 
           case SSym("lambda") :: SList(i) :: body :: Nil => {
-            FdExt(getIdentifierList(i), parse(body))
+            //            FdExt(getIdentifierList(i), parse(body))
+
+            val idenlist = getIdentifierList(i)
+
+            if (idenlist.distinct.size == idenlist.size) {
+              FdExt(idenlist, parse(body))
+            } else throw CustomParseException("Repeated identifier name in a function definition")
           }
 
           case SSym("let") :: SList(bindings) :: e :: Nil => {
             bindings match {
-              case l :: _ => LetExt(bindings.map((d: SExpr) => createLetBindExt(d)), parse(e))
+              //              case l :: _ => LetExt(bindings.map((d: SExpr) => createLetBindExt(d)), parse(e))
+              case l :: _ => {
+                val letext = LetExt(bindings.map({ (d: SExpr) => createLetBindExt(d) }), parse(e))
+
+
+                if (letDeubCheck(letext.binds)) {
+                  letext
+                }
+                else throw CustomParseException("Duplicated Let name")
+              }
               case _ => throw CustomParseException("no bindings")
             }
           }
@@ -171,6 +186,11 @@ object Parser {
       case _ => throw CustomParseException("Wrong Branch format")
 
     }
+  }
+
+  def letDeubCheck(binds: List[LetBindExt]): Boolean = {
+    val names = binds.map({ case LetBindExt(n, v) => n })
+    names.distinct.size == names.size
   }
 
 }

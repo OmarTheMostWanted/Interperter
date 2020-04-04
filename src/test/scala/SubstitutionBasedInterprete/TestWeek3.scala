@@ -95,9 +95,6 @@ class TestWeek3 extends FunSuite {
       desugar(parse("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))"))
     }
 
-    assertResult(NumV(40)) {
-      interp(desugar(parse("u=")))
-    }
   }
 
 
@@ -185,12 +182,12 @@ class TestWeek3 extends FunSuite {
 
   test("shadow 3") {
     assertResult(NumV(1)) {
-      imLazy("((lambda (x x)  ((lambda (x)  x) 1 )  ) 1 2)")
+      imLazy("((lambda (x y)  ((lambda (x)  x) 1 )  ) 1 2)")
     }
   }
 
   test("same parameter name") {
-    assertResult(NumV(1)) {
+    intercept[ParseException] {
       imLazy("((lambda (x x) x)  1 2 )")
     }
   }
@@ -210,7 +207,7 @@ class TestWeek3 extends FunSuite {
   }
 
 
-  test("name capture") { //?
+  test("name capture") { //? wrong
     intercept[InterpException] {
       imLazy("( (lambda (f x) (f x))  (lambda (y) (+ y x)) 1 )")
     }
@@ -222,9 +219,15 @@ class TestWeek3 extends FunSuite {
     }
   }
 
+  test("name capture correct") {
+    intercept[InterpException] {
+      imLazy("(((lambda (x) (lambda (y) (x y))) (lambda (z) (* z y))) 15)")
+    }
+  }
+
   test("use free var") {
-    assertResult(NumV(2)) {
-      imLazy("((lambda (x) (lambda (z) (+ 1 x))) 1)")
+    assertResult(FunV(FdC(List("z"), PlusC(NumC(1), ValC(NumV(1)))))) {
+      imLazy("(  (lambda (x) (lambda (z) (+ 1 x) )   ) 1)")
     }
   }
 
