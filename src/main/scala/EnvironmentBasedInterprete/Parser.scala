@@ -88,6 +88,8 @@ object Parser {
 
           case SSym("is-list") :: a :: Nil => UnOpExt("is-list", parse((a)))
 
+          case SSym("rec-lam") :: SSym(name) :: SList(SSym(param) :: Nil) :: body :: Nil => RecLamExt(name, param, parse(body))
+
 
           case fun :: iden => AppExt(parse(fun), iden.map(e => parse(e)))
 

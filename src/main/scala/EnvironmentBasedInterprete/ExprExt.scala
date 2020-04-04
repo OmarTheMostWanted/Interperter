@@ -32,6 +32,7 @@ case class FdExt(params: List[String], body: ExprExt) extends ExprExt
 
 case class LetExt(binds: List[LetBindExt], body: ExprExt) extends ExprExt
 
+case class RecLamExt(name: String, param: String, body: ExprExt) extends ExprExt
 
 
 case class LetBindExt(name: String, value: ExprExt)
@@ -40,6 +41,7 @@ case class LetBindExt(name: String, value: ExprExt)
 object ExprExt {
   val binOps = Set("+", "*", "-", "and", "or", "num=", "num<", "num>", "cons")
   val unOps = Set("-", "not", "head", "tail", "is-nil", "is-list")
-  val reservedWords = binOps ++ unOps ++ Set("list", "nil", "if", "lambda", "let", "true", "false")
+  val reservedWords: Set[String] = binOps ++ unOps ++ Set("list", "nil", "if", "lambda",
+    "let", "true", "false", "rec-lam")
 }
 

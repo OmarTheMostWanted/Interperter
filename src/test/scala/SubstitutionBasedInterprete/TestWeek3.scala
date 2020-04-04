@@ -96,7 +96,7 @@ class TestWeek3 extends FunSuite {
     }
 
     assertResult(NumV(40)) {
-      interp(desugar(parse("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))")))
+      interp(desugar(parse("u=")))
     }
   }
 
@@ -195,4 +195,48 @@ class TestWeek3 extends FunSuite {
     }
   }
 
+
+  test("scope test") {
+    assertResult(NumV(1)) {
+      imLazy("(((lambda (x) (lambda (y) x )) 1 ) 2 )")
+    }
+  }
+
+
+  test("passing a function as parameter") {
+    assertResult(NumV(2)) {
+      imLazy("( (lambda (f x) (f x))  (lambda (y) (+ y y)) 1 )")
+    }
+  }
+
+
+  test("name capture") { //?
+    intercept[InterpException] {
+      imLazy("( (lambda (f x) (f x))  (lambda (y) (+ y x)) 1 )")
+    }
+  }
+
+  test("name capture 1") {
+    intercept[InterpException] {
+      imLazy("(((lambda (f)(lambda (x)(f x)))(lambda (y)(+ y x)))  21 )")
+    }
+  }
+
+  test("use free var") {
+    assertResult(NumV(2)) {
+      imLazy("((lambda (x) (lambda (z) (+ 1 x))) 1)")
+    }
+  }
+
+  test("use free var 1") {
+    assertResult(NumV(2)) {
+      imLazy("(  (lambda (x) ((lambda (z) (+ 1 x)) 0)   ) 1)")
+    }
+  }
+
+  test("rec lam") {
+    assertResult(NumV(720)) {
+      imLazy("((lambda (you) \n                      (let ((func (lambda (self me) \n                        (if (num= me 0)\n                          1\n                          (* me (self self (- me 1)))\n                        )\n                      )))\n                  (func func you))) 6)")
+    }
+  }
 }

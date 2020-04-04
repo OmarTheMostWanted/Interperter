@@ -195,4 +195,30 @@ class TestWeek3 extends FunSuite {
     }
   }
 
+  test("scope test") {
+    assertResult(NumV(1)) {
+      imLazy("(((lambda (x) (lambda (y) x )) 1 ) 2 )")
+    }
+  }
+
+
+  test("passing a function as parameter") {
+    assertResult(NumV(2)) {
+      imLazy("( (lambda (f x) (f x))  (lambda (y) (+ y y)) 1 )")
+    }
+  }
+
+
+  test("name capture") { //?
+    intercept[InterpException] {
+      imLazy("( (lambda (f x) (f x))  (lambda (y) (+ y x)) 1 )")
+    }
+  }
+
+  test("name capture 1") {
+    intercept[InterpException] {
+      imLazy("(((lambda (f)(lambda (x)(f x)))(lambda (y)(+ y x)))  21 )")
+    }
+  }
+
 }

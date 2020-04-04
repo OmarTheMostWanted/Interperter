@@ -67,11 +67,15 @@ object Desugar {
           case LetBindExt(s, e) => desugar(e)
         })
       }
+      case RecLamExt(name, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
 
       case _ => UndefinedC()
     }
 
   }
+
+  //Y combinator: (lambda (f) ((lambda (x) (x x)) (lambda (x) (f (lambda (y) ((x x) y))))))
+  def Y = desugar(FdExt(List("f"), AppExt(FdExt(List("x"), AppExt(IdExt("x"), List(IdExt("x")))), List(FdExt(List("x"), AppExt(IdExt("f"), List(FdExt(List("y"), AppExt(AppExt(IdExt("x"), List(IdExt("x"))), List(IdExt("y")))))))))))
 
   def condEExtDesugar(list: List[(ExprExt, ExprExt)], e: ExprExt): ExprC = {
     list match {
@@ -80,7 +84,6 @@ object Desugar {
       case (c, t) :: f => IfC(desugar(c), desugar(t), condEExtDesugar(f, e))
     }
   }
-
 
   def condExtDesugar(list: List[(ExprExt, ExprExt)]): ExprC = {
     list match {

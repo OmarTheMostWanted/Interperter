@@ -4,7 +4,6 @@ object Interp {
   def interp(e: ExprC): Value = {
     e match {
       case ValC(v) => v
-
       case NumC(n) => NumV(n)
       case TrueC() => BoolV(true)
       case FalseC() => BoolV(false)
