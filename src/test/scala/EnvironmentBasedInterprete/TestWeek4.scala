@@ -8,6 +8,10 @@ class TestWeek4 extends FunSuite {
     interp(desugar(parse(x)))
   }
 
+  def interp(x: String): Value = {
+    Interp.interp(desugar(parse(x)))
+  }
+
   def interp(x: ExprC): Value = {
     Interp.interp(x)
   }
@@ -22,7 +26,7 @@ class TestWeek4 extends FunSuite {
 
   test("rec-lam test 1") {
     assertResult(NumV(6)) {
-      imLazy("((rec-lam sum (n) (if (num= n 0) 0 (+ n (sum (- n 1))))) 3)")
+      interp("((rec-lam sum (n) (if (num= n 0) 0 (+ n (sum (- n 1))))) 3)")
     }
   }
 

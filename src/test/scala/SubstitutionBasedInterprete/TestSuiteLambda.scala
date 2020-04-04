@@ -4,29 +4,6 @@ import org.scalatest.FunSuite
 
 class TestSuiteLambda extends FunSuite {
 
-  /**
-   * Tests for Desugaring
-   */
-
-  test("Desugar 5") {
-    assertResult(
-      NumC(5)
-    ) {
-      desugar(NumExt(5))
-    }
-  }
-
-  /**
-   * Tests for Interpreting
-   */
-
-  test("Interp 5") {
-    assertResult(
-      NumV(5)
-    ) {
-      interp(NumC(5))
-    }
-  }
 
   test("Interp 5+true throws InterpException") {
     intercept[InterpException] {

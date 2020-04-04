@@ -242,4 +242,49 @@ class TestWeek3 extends FunSuite {
       imLazy("((lambda (you) \n                      (let ((func (lambda (self me) \n                        (if (num= me 0)\n                          1\n                          (* me (self self (- me 1)))\n                        )\n                      )))\n                  (func func you))) 6)")
     }
   }
+
+  test("catch parser exception - let wrong expression") {
+    assertResult(LetExt(List(LetBindExt("x", NumExt(15))), AppExt(IdExt("q"), List()))) {
+      (parse("(let ((x 15)) (q))"))
+    }
+  } //fixed
+
+
+  test("Catch parser exception - lambda with reserved name!") {
+    intercept[ParseException] {
+      interp(desugar(parse("(lambda (if) (+ if 0))")))
+    }
+  }
+
+  test("lambda same param") {
+    intercept[ParseException] {
+      interp(desugar(parse("(lambda (x y x) (+ x y))")))
+    }
+  }
+
+  test("lambda with lambda as param") {
+    intercept[ParseException] {
+      interp(desugar(parse("(lambda ((lambda (x) x)) (+ x 0))")))
+    }
+  }
+
+  test("catch parser exception - let no binders") {
+    intercept[ParseException] {
+      parse("(let () (+ x 5))")
+    }
+  }
+
+  test("catch parser exception - let wrong binders") {
+    intercept[ParseException] {
+      parse("(let (q) (+ x 5))")
+    }
+  }
+
+  test("very simple nested lambda 1") {
+    intercept[InterpException] {
+      imLazy("( (lambda (x  y) x)  1 )")
+    }
+  }
+
+
 }
