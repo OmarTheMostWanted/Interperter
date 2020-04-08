@@ -43,7 +43,13 @@ object Parser {
           }
 
           case SSym("lambda") :: SList(i) :: body :: Nil => {
-            FdExt(getIdentifierList(i), parse(body))
+            //            FdExt(getIdentifierList(i), parse(body))
+
+            val idenlist = getIdentifierList(i)
+
+            if (idenlist.distinct.size == idenlist.size) {
+              FdExt(idenlist, parse(body))
+            } else throw CustomParseException("Repeated identifier name in a function definition")
           }
 
           case SSym("let") :: SList(bindings) :: e :: Nil => {

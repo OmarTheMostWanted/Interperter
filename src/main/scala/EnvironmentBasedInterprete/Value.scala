@@ -14,4 +14,4 @@ case class ConsV(head: Value, tail: Value) extends Value
 
 case class FunV(f: FdC) extends Value
 
-case class ClosV(f: FdC, env: Environment) extends Value
+case class ClosV(f: FdC, env: List[Bind]) extends Value

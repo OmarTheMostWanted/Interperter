@@ -5,6 +5,9 @@ object Interp {
   def interp(e: ExprC): Value = interp(e, Nil)
 
   def interp(e: ExprC, env: List[Bind]): Value = {
+
+    println("interpreting ==  " + e + "     with env==   " + env)
+
     e match {
       case ValC(v) => v
 
@@ -59,12 +62,43 @@ object Interp {
         }
       }
 
-      case FdC(l, body) => FunV(FdC(l, body))
+      case FdC(l, body) => ClosV(FdC(l, body), env)
 
-      case AppC(f, args) => ???
-      case IdC(y) => ???
+      case AppC(f, args) => {
+        interp(f, env) match {
+          case ClosV(FdC(params, body), closEnv) => {
+
+            val envNew = creatEnvironment(params, args, env) ::: closEnv
+
+            println(envNew)
+
+            interp(body, envNew)
+          }
+
+          case _ => throw CustomInterpException("Not a function: " + f)
+        }
+      }
+      case IdC(y) => lookUp(y, env)
       case UndefinedC() => throw CustomInterpException("Undefined behavior")
     }
+  }
+
+  def creatEnvironment(p: List[String], a: List[ExprC], env: List[Bind]): List[Bind] = {
+
+    if (p.size == a.size) {
+      p.zip(a.map(e => interp(e, env))).map({ case (n: String, v: Value) => Bind(n, v) })
+    } else throw CustomInterpException("the number of parameters does not match the number of arguments")
+
+  }
+
+  def lookUp(iden: String, env: List[Bind]): Value = {
+
+    for (bind <- env) {
+      if (bind.name == iden) {
+        return bind.value
+      }
+    }
+    throw CustomInterpException("Free variable")
   }
 
 

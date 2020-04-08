@@ -74,6 +74,7 @@ object Interp {
             }
             interp(substitute(body, createBindList(param, args.map(e => interp(e)))))
           }
+          case _ => throw CustomInterpException("Not a function: " + f)
         }
       }
       case IdC(y) => throw CustomInterpException("Free identifier " + y)
