@@ -70,8 +70,6 @@ object Interp {
 
             val envNew = creatEnvironment(params, args, env) ::: closEnv
 
-            println(envNew)
-
             interp(body, envNew)
           }
 

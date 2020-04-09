@@ -54,7 +54,16 @@ object Parser {
 
           case SSym("let") :: SList(bindings) :: e :: Nil => {
             bindings match {
-              case l :: _ => LetExt(bindings.map((d: SExpr) => createLetBindExt(d)), parse(e))
+              //              case l :: _ => LetExt(bindings.map((d: SExpr) => createLetBindExt(d)), parse(e))
+              case l :: _ => {
+                val letext = LetExt(bindings.map({ (d: SExpr) => createLetBindExt(d) }), parse(e))
+
+
+                if (letDeubCheck(letext.binds)) {
+                  letext
+                }
+                else throw CustomParseException("Duplicated Let name")
+              }
               case _ => throw CustomParseException("no bindings")
             }
           }
@@ -94,7 +103,13 @@ object Parser {
 
           case SSym("is-list") :: a :: Nil => UnOpExt("is-list", parse((a)))
 
-          case SSym("rec-lam") :: SSym(name) :: SList(SSym(param) :: Nil) :: body :: Nil => RecLamExt(name, param, parse(body))
+          case SSym("rec-lam") :: SSym(name) :: SList(SSym(param) :: Nil) :: body :: Nil => {
+
+            if (ExprExt.reservedWords.contains(name) || ExprExt.reservedWords.contains(param)) {
+              throw CustomParseException("Name or Parameter not allowed")
+            } else
+              RecLamExt(name, param, parse(body))
+          }
 
 
           case fun :: iden => AppExt(parse(fun), iden.map(e => parse(e)))
@@ -179,6 +194,11 @@ object Parser {
       case _ => throw CustomParseException("Wrong Branch format")
 
     }
+  }
+
+  def letDeubCheck(binds: List[LetBindExt]): Boolean = {
+    val names = binds.map({ case LetBindExt(n, v) => n })
+    names.distinct.size == names.size
   }
 
 }
