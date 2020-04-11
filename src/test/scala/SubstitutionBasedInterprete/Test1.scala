@@ -1,4 +1,4 @@
-package Interpreter
+package SubstitutionBasedInterprete
 
 import org.scalatest.FunSuite
 

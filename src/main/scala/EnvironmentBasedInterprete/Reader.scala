@@ -1,4 +1,4 @@
-package Interpreter
+package EnvironmentBasedInterprete
 
 
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -21,7 +21,7 @@ object Reader extends JavaTokenParsers {
 
   def symbol: Parser[SExpr] = not(wholeNumber) ~> "[^()\\s]+".r ^^ SSym
 
-  def slist: Parser[SExpr] = "(" ~> sexpr.+ <~ ")" ^^ SList
+  def slist: Parser[SExpr] = "(" ~> sexpr.* <~ ")" ^^ SList
 
   def num: Parser[SExpr] = wholeNumber ^^ { s => SNum(s.toInt) }
 }

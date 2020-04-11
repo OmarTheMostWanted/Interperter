@@ -1,4 +1,4 @@
-package Interpreter
+package SubstitutionBasedInterprete
 
 
 //Values
@@ -11,4 +11,6 @@ case class BoolV(v: Boolean) extends Value
 case class NilV() extends Value
 
 case class ConsV(head: Value, tail: Value) extends Value
+
+case class FunV(f: FdC) extends Value
 

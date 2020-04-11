@@ -1,4 +1,4 @@
-package Interpreter
+package SubstitutionBasedInterprete
 
 
 //Desugared Syntax
@@ -33,4 +33,14 @@ case class IsNilC(e: ExprC) extends ExprC
 case class IsListC(e: ExprC) extends ExprC
 
 case class UndefinedC() extends ExprC
+
+case class AppC(f: ExprC, args: List[ExprC]) extends ExprC
+
+case class IdC(c: String) extends ExprC
+
+case class FdC(params: List[String], body: ExprC) extends ExprC
+
+case class ValC(v: Value) extends ExprC // note: no corresponding surface syntax
+
+case class Closed(e: ExprC)
 

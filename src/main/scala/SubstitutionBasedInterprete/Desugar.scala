@@ -1,4 +1,4 @@
-package Interpreter
+package SubstitutionBasedInterprete
 
 
 object Desugar {
@@ -55,6 +55,19 @@ object Desugar {
         condExtDesugar(l)
       }
       case CondEExt(l, e) => condEExtDesugar(l, e)
+      case FdExt(l, b) => FdC(l, desugar(b))
+      case IdExt(c) => IdC(c)
+
+      case AppExt(f, args) => AppC(desugar(f), args.map(e => desugar(e)))
+
+      case LetExt(binds, body) => {
+        AppC(FdC(binds.map {
+          case LetBindExt(s, e) => s
+        }, desugar(body)), binds.map {
+          case LetBindExt(s, e) => desugar(e)
+        })
+      }
+
       case _ => UndefinedC()
     }
 
@@ -62,7 +75,7 @@ object Desugar {
 
   def condEExtDesugar(list: List[(ExprExt, ExprExt)], e: ExprExt): ExprC = {
     list match {
-      case Nil => throw new CustomDesugarException("nothing before else")
+      case Nil => throw CustomDesugarException("nothing before else")
       case (c, t) :: Nil => IfC(desugar(c), desugar(t), desugar(e))
       case (c, t) :: f => IfC(desugar(c), desugar(t), condEExtDesugar(f, e))
     }
