@@ -22,8 +22,8 @@ object Desugar {
           }
           case "num=" => EqNumC(desugar(l), desugar(r))
           case "num<" => LtC(desugar(l), desugar(r))
-          case "num>" => LtC(desugar(r), desugar(l))
-
+          //case "num>" => LtC(desugar(r), desugar(l)) now that the order matters we cant just flip them
+          case "num>" => LtC(MultC(NumC(-1), desugar(l)), MultC(NumC(-1), desugar(r)))
           case "cons" => ConsC(desugar(l), desugar(r))
           case "setbox" => SetboxC(desugar(l), desugar(r))
           case "seq" => SeqC(desugar(l), desugar(r))
@@ -73,8 +73,8 @@ object Desugar {
       case SetExt(id, e) => SetC(id, desugar(e))
       case RecLamExt(name, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
 
-      // case LetRecExt(binds, body) => AppC(FdC(bindNames(binds), letrecBody(binds, desugar(body))),
-      //   binds map (_ => UninitializedC()))  //fill with UninitializedC()
+      //      case LetRecExt(binds, body) => AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, makebody(binds, desugar(body))),
+      //        binds map (_ => UninitializedC())) //fill with UninitializedC()
 
       case LetRecExt(binds, body) => LetRecExtConvert(binds, body)
 
@@ -84,7 +84,7 @@ object Desugar {
   }
 
   def LetRecExtConvert(binds: List[LetBindExt], body: ExprExt): ExprC = {
-    SeqC(AppC(FdC(binds.map { case LetBindExt(s, e) => s }, desugar(body)), binds.map { case LetBindExt(s, e) => UninitializedC() }), AppC(FdC(binds.map { case LetBindExt(s, e) => s }, desugar(body)), binds.map { case LetBindExt(s, e) => desugar(e) }))
+    SeqC(AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, UninitializedC()), binds.map { case LetBindExt(s, e) => UninitializedC() }), AppC(FdC(binds.map { case LetBindExt(s, e) => s }, desugar(body)), binds.map { case LetBindExt(s, e) => desugar(e) }))
   }
 
 
@@ -108,11 +108,11 @@ object Desugar {
     }
   }
 
-  // def letrecBody(binds: List[LetBindExt], mainBody: ExprC): ExprC =
-  //   binds match {
-  //     case Nil => mainBody
-  //     case LetBindExt(name, value) :: tail =>
-  //       SeqC(SetC(name, desugar(value)), letrecBody(tail, mainBody))
-  //   }
+  def makebody(binds: List[LetBindExt], body: ExprC): ExprC =
+    binds match {
+      case Nil => body
+      case LetBindExt(n, v) :: tail =>
+        SeqC(SetC(n, desugar(v)), makebody(tail, body))
+    }
 
 }

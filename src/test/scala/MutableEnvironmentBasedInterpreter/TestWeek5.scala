@@ -10,9 +10,13 @@ class TestWeek5 extends FunSuite {
     Interp.interp(x)
   }
 
-  def interp(x: String): (Value, Store) = {
-    Interp.interp(desugar(x), Nil, Nil)
+  def interp(x: String): Value = {
+    Interp.interp(desugar(x))
   }
+
+  //  def interp(x: String): (Value, Store) = {
+  //    Interp.interp(desugar(x), Nil, Nil)
+  //  }
 
   def desugar(x: String): ExprC = {
     Desugar.desugar(parse(x))
@@ -26,9 +30,46 @@ class TestWeek5 extends FunSuite {
     Desugar.desugar(x)
   }
 
+  //interp
+  test("interp - box with number comparison num<") {
+    assertResult(BoolV(true)) {
+      interp("(let ((x (box 5)) (y (box 2))) (num< (setbox x (unbox y)) (setbox y 3) ))")
+    }
+  }
+
+  test("interp - box with number comparison num=") {
+    assertResult(BoolV(false)) {
+      interp("(let ((x (box 5)) (y (box 2))) (num= (setbox x (unbox y)) (setbox y 3) ))")
+    }
+  }
+
   test("box test 1") {
-    assertResult((BoxV(0), List(Cell(0, NumV(1))))) {
+    assertResult(BoxV(0)) {
       interp("(box 1)")
+    }
+  }
+
+  test("unbox test 1") {
+    assertResult(NumV(1)) {
+      interp("(unbox (box 1))")
+    }
+  }
+
+  test("setbox test 1") {
+    assertResult(NumV(2)) {
+      interp("(setbox (box 1) 2)")
+    }
+  }
+
+  test("letrec 1") {
+    assertResult(NumV(3)) {
+      interp("(letrec ((x 1) (y 2)) (+ x y))")
+    }
+  }
+
+  test("letrec 2") {
+    assertResult(NumV(2)) {
+      interp("(letrec ((x 1) (y x)) (+ x y))")
     }
   }
 

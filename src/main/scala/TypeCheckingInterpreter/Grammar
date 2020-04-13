@@ -1,0 +1,59 @@
+context-free syntax
+
+  Expr.NumExt       = INT      // integer literals
+  Expr.TrueExt      = [true]
+  Expr.FalseExt     = [false]
+  Expr.IdExt        = ID
+
+  Expr.UnOpExt      = [([UnOp] [Expr])]
+  Expr.BinOpExt     = [([BinOp] [Expr] [Expr])]
+
+  UnOp.MIN          = [-]
+  UnOp.NOT          = [not]
+  UnOp.HEAD         = [head]
+  UnOp.TAIL         = [tail]
+  UnOp.ISNIL        = [is-nil]
+  UnOp.BOX          = [box]
+  UnOp.UNBOX        = [unbox]
+
+  UnOp.FST          = [fst]
+  UnOp.SND          = [snd]
+
+  BinOp.PLUS        = [+]
+  BinOp.MULT        = [*]
+  BinOp.MINUS       = [-]
+  BinOp.AND         = [and]
+  BinOp.OR          = [or]
+  BinOp.NUMEQ       = [num=]
+  BinOp.NUMLT       = [num<]
+  BinOp.NUMGT       = [num>]
+  BinOp.CONS        = [cons]
+  BinOp.SETBOX      = [setbox]
+  BinOp.SEQ         = [seq]
+
+  BinOp.PAIR        = [pair]
+
+  Expr.IfExt        = [(if [Expr] [Expr] [Expr])]
+
+  Expr.NilExt       = [(nil : [Type])]
+  Expr.ListExt      = [(list : [Type] ([Expr*]))]
+
+  Param.Param       = [([ID] : [Type])]
+
+  Expr.FdExt        = [(lambda ([Param*]) [Expr])]
+  Expr.AppExt       = [([Expr] [Expr*])]
+  Expr.LetExt       = [(let ([LetBind+]) [Expr])]
+  Expr.LetRecExt    = [(letrec ([LetRecBind+]) [Expr])]
+  Expr.Set          = [(set [ID] [Expr])]
+
+  LetBind.LetBindExt = [([ID] [Expr])]
+  LetRecBind.LetRecBind = [([Param] [Expr])]
+
+  Expr.RecLamExt    = [(rec-1 ([ID] : [Type] -> [Type]) ([ID]) [Expr])]
+
+  Type.NumT         = [Num]
+  Type.BoolT        = [Bool]
+  Type.ListT        = [(List [Type])]
+  Type.FunT         = [(([Type*]) -> [Type])]
+  Type.PairT        = [(Pair [Type] [Type])]
+  Type.RefT         = [(Ref [Type])]

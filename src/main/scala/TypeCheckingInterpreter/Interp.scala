@@ -1,4 +1,4 @@
-package MutableEnvironmentBasedInterpreter
+package TypeCheckingInterpreter
 
 object Interp {
   type Store = List[Cell]
@@ -66,13 +66,13 @@ object Interp {
         }
       }
 
-      case IsListC(e) => {
-        interp(e, nv, st1) match {
-          case (NilV(), st2) => (BoolV(true), st2)
-          case (ConsV(h, t), st2) => (BoolV(true), st2)
-          case (_, st2) => (BoolV(false), st2)
-        }
-      }
+      //      case IsListC(e) => {
+      //        interp(e, nv, st1) match {
+      //          case (NilV(), st2) => (BoolV(true), st2)
+      //          case (ConsV(h, t), st2) => (BoolV(true), st2)
+      //          case (_, st2) => (BoolV(false), st2)
+      //        }
+      //      }
 
       case AppC(f, args) => {
         val (fun, st2) = interp(f, nv, st1)

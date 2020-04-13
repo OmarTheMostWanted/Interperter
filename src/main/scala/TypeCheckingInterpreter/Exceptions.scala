@@ -1,20 +1,24 @@
-package MutableEnvironmentBasedInterpreter
+package TypeCheckingInterpreter
 
 abstract class Exceptions
 
 case class NotImplementedException(msg: String = null) extends Exception(msg)
 
-//exceptions
+//Parse exceptions
 abstract class ParseException(msg: String = null) extends Exception(msg)
 
 case class ParseExc(msg: String = null) extends ParseException
 
+//Type Checking exceptions
+abstract class TypeException extends RuntimeException
+
+//Desugaring exceptions
 abstract class DesugarException(msg: String = null) extends Exception(msg)
 
-case class CondEExtDesugarException(msg: String = null) extends DesugarException(msg)
-
+//case class CondEExtDesugarException(msg: String = null) extends DesugarException(msg)  //Deprecated
 case class LetRecException(msg: String = null) extends DesugarException(msg)
 
+//Interpreting exceptions
 abstract class InterpException(msg: String = null) extends Exception(msg)
 
 case class NotANumberException(msg: String = null) extends InterpException(msg)
