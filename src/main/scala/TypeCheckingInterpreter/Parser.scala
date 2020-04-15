@@ -10,19 +10,19 @@
 //    case _ => throw ParseExc("The case: { " + list + " } isn't define - parserList()")
 //  }
 //
-////  def parseCond(list: List[SExpr]): List[(ExprExt, ExprExt)] = list match {
-////    case Nil => Nil
-////    case head :: tail => parseCondBranch(head) :: parseCond(tail)
-////    case _ => throw ParseExc("The case: { " + list + " } isn't define - parserCond()")
-////  }
+//  //  def parseCond(list: List[SExpr]): List[(ExprExt, ExprExt)] = list match {
+//  //    case Nil => Nil
+//  //    case head :: tail => parseCondBranch(head) :: parseCond(tail)
+//  //    case _ => throw ParseExc("The case: { " + list + " } isn't define - parserCond()")
+//  //  }
 //
-////  def parseCondBranch(sexpr: SExpr): (ExprExt, ExprExt) = sexpr match {
-////    case SList(e1 :: e2 :: Nil) => (parse(e1), parse(e2))
-////    case _ => throw ParseExc("The case: { " + sexpr + " } isn't define - parserCondBranch()")
-////  }
+//  //  def parseCondBranch(sexpr: SExpr): (ExprExt, ExprExt) = sexpr match {
+//  //    case SList(e1 :: e2 :: Nil) => (parse(e1), parse(e2))
+//  //    case _ => throw ParseExc("The case: { " + sexpr + " } isn't define - parserCondBranch()")
+//  //  }
 //
 //  /* return the string if not reserved, otherwise raise an exception */
-//  def isReserved(s: String): String = if(ExprExt.reservedWords.contains(s)) throw ParseExc(s +" is a reserved word") else s
+//  def isReserved(s: String): String = if (ExprExt.reservedWords.contains(s)) throw ParseExc(s + " is a reserved word") else s
 //
 //  /* return the string if unique, otherwise raise an exception */
 //  def isUnique(s: String, list: List[SExpr]): String = (s, list) match {
@@ -68,11 +68,26 @@
 //        case "false" => FalseExt()
 //        case "nil" => NilExt()
 //        case x => IdExt(isReserved(x))
-//        // case _        => throw ParseExc("The symbol: { " + s + " } isn't define - main parser SSym(s)")
 //      }
 //
 //    //list
-//    case SList(SSym(s) :: tail) if s == "list" =>
+//    case SList(SSym("list") :: SSym(":") :: list_type :: tail) =>
+//
+//      list_type match {
+//        case SSym(t) => t match {
+//          case "Num" => ListExt(NumT(), parseList(tail))
+//          case "Bool" => ListExt(BoolT(), parseList(tail))
+//          case _ => throw ParseExc(t + " is not a type ")
+//        }
+//        case SList(t) => { // when the list contains a list  [(List [Type])] //or FunT or PairT or RefT
+//          t match {
+//            case SSym("List") :: SSym(type_T)
+//          }
+//
+//
+//        }
+//      }
+//
 //      ListExt(parseList(tail))
 //
 //    //if
@@ -80,19 +95,19 @@
 //      IfExt(parse(condition), parse(doTrue), parse(doElse))
 //
 //    //cond
-////    case SList(SSym(s) :: tail) if s == "cond" =>
-////      tail match {
-////        case Nil => throw ParseExc("Empty cond!")
-////
-////        case SList(SSym(s) :: elseBranch :: Nil) :: Nil if s == "else" =>
-////          throw ParseExc("Cond with just else branch!")
-////
-////        case branches :+ SList(SSym(s) :: elseBranch :: Nil) if s == "else" =>
-////          CondEExt(parseCond(branches), parse(elseBranch))
-////
-////        case _ =>
-////          CondExt(parseCond(tail))
-////      }
+//    //    case SList(SSym(s) :: tail) if s == "cond" =>
+//    //      tail match {
+//    //        case Nil => throw ParseExc("Empty cond!")
+//    //
+//    //        case SList(SSym(s) :: elseBranch :: Nil) :: Nil if s == "else" =>
+//    //          throw ParseExc("Cond with just else branch!")
+//    //
+//    //        case branches :+ SList(SSym(s) :: elseBranch :: Nil) if s == "else" =>
+//    //          CondEExt(parseCond(branches), parse(elseBranch))
+//    //
+//    //        case _ =>
+//    //          CondExt(parseCond(tail))
+//    //      }
 //
 //    //lambda
 //    case SList(SSym("lambda") :: SList(args) :: tail :: Nil) =>
@@ -117,12 +132,12 @@
 //
 //    //unary operation
 //    case SList(SSym(s) :: t1 :: Nil)
-//      if List("-", "not", "head", "tail", "is-nil", "is-list", "box", "unbox") contains s =>
+//      if ExprExt.unOps contains s =>
 //      UnOpExt(s, parse(t1))
 //
 //    //binary operation
 //    case SList(SSym(s) :: t1 :: t2 :: Nil)
-//      if List("+", "*", "-", "and", "or", "num=", "num<", "num>", "cons", "setbox", "seq") contains s =>
+//      if ExprExt.binOps contains s =>
 //      BinOpExt(s, parse(t1), parse(t2))
 //
 //    //app

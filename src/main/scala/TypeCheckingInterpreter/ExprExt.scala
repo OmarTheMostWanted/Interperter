@@ -46,9 +46,12 @@ case class LetBindExt(name: String, value: ExprExt)
 case class LetRecBindExt(name: String, ty: Type, value: ExprExt)
 
 object ExprExt {
-  val binOps = Set("+", "*", "-", "and", "or", "num=", "num<", "num>",
-    "cons", "setbox", "seq", "pair")
+
+
+  val binOps = Set("+", "*", "-", "and", "or", "num=", "num<", "num>", "cons", "setbox", "seq", "pair")
   val unOps = Set("-", "not", "head", "tail", "is-nil", "box", "unbox", "fst", "snd")
+  val types = Set("Num", "Bool", "List", "Pair", "Ref")
+
   val reservedWords = binOps ++ unOps ++ Set("list", "if", "lambda",
     "let", "true", "false", "rec-lam", "set", "letrec",
     ":", "->", "Num", "Bool", "List", "Pair", "Ref")
