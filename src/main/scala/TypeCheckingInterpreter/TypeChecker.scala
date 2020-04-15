@@ -157,6 +157,18 @@ object TypeChecker {
 
 
       }
+      case IfExt(c, t, e) => {
+        val cond = typeOf(c, nv)
+        val tr = typeOf(t, nv)
+        val el = typeOf(e, nv)
+
+        if (cond == BoolT()) {
+          if (tr == el) {
+            return tr
+          } else throw TypeMissMatchException("the true and false branch of the if Statement do not match " + tr.toString + " and " + el.toString)
+        } else throw NotBooleanInIfConditionTypeException("expected condition but got: " + cond.toString)
+
+      }
 
     }
   }
