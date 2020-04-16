@@ -405,5 +405,29 @@ class TestWeek6 extends FunSuite {
 
   //
 
+  test("rec-lam") {
+    assertResult(BoolT()) {
+      typeOf("((rec-lam  (f : Num -> Bool) (n) (if (num= n 0) true (f (- n 2)) ) )  8 )")
+    }
+  }
+
+  test("rec-lam simple") {
+    assertResult(NumT()) {
+      typeOf("((rec-lam  (f : Num -> Num) (n) (f n) )  8 )")
+    }
+  }
+
+  test("type checking let correct") {
+    assertResult(NumT()) {
+      typeOf("(let ((x 1))  (let ((x x)) x ))")
+    }
+  }
+
+  test("wrong if c") {
+    intercept[TypeException] {
+      typeOf("(if 1 true false")
+    }
+  }
+
 
 }
