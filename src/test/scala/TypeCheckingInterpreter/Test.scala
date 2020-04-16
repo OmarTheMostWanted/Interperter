@@ -66,15 +66,8 @@ class Test extends FunSuite {
 //    }
 //  }
 //
-//  test("nested let") {
-//
-//    assertResult(NumV(40)) {
-//      imLazy("(let ((double (lambda (x) (+ x x) ))) (let ((quadruple (lambda (x) (double (double x))))) (quadruple 10)))")
-//    }
-//
-//  }
-//
-//
+
+  //
 //
 //  test("complex app") {
 //    assertResult(NumV(40)) {
@@ -165,11 +158,6 @@ class Test extends FunSuite {
 //    }
 //  }
 //
-//  test("rec lam") {
-//    assertResult(NumV(720)) {
-//      imLazy("((lambda (you) \n                      (let ((func (lambda (self me) \n                        (if (num= me 0)\n                          1\n                          (* me (self self (- me 1)))\n                        )\n                      )))\n                  (func func you))) 6)")
-//    }
-//  }
 //
 //  test("very simple nested lambda 1") {
 //    intercept[InterpException] {

@@ -27,6 +27,7 @@ object Desugar {
           case "cons" => ConsC(desugar(l), desugar(r))
           case "setbox" => SetboxC(desugar(l), desugar(r))
           case "seq" => SeqC(desugar(l), desugar(r))
+          case "pair" => PairC(desugar(l), desugar(r))
         }
       }
       case UnOpExt(s, e) => {
@@ -77,8 +78,8 @@ object Desugar {
       case SetExt(id, e) => SetC(id, desugar(e))
       case RecLamExt(name, paramTy, retTy, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
 
-            case LetRecExt(binds, body) => AppC(FdC(binds.map { case LetRecBindExt(s , t , v) => s case _ => throw LetRecException("") }, makebody(binds, desugar(body))),
-              binds map (_ => UninitializedC())) //fill with UninitializedC()
+      case LetRecExt(binds, body) => AppC(FdC(binds.map { case LetRecBindExt(s, t, v) => s case _ => throw LetRecException("") }, makebody(binds, desugar(body))),
+        binds map (_ => UninitializedC())) //fill with UninitializedC()
 
       //            case LetRecExt(binds, body) => LetRecExtConvert(binds, body)
 
@@ -99,7 +100,7 @@ object Desugar {
   def makebody(binds: List[LetRecBindExt], body: ExprC): ExprC =
     binds match {
       case Nil => body
-      case LetRecBindExt(n , t, v) :: tail =>
+      case LetRecBindExt(n, t, v) :: tail =>
         SeqC(SetC(n, desugar(v)), makebody(tail, body))
     }
 

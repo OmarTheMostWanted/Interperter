@@ -62,14 +62,14 @@ object TypeChecker {
         if(s == "head"){
           ty match {
             case ListT(t) => return t
-            case _ => throw NotAListException(s + " with a non list")
+            case _ => throw NotAListTypeException(s + " with a non list")
           }
         }
 
         if(s == "tail"){
           ty match {
             case ListT(t) => return ty
-            case _ => throw NotAListException(s + " with a non list")
+            case _ => throw NotAListTypeException(s + " with a non list")
           }
         }
 
@@ -81,7 +81,7 @@ object TypeChecker {
         if (uniBoxOpsToType.contains(s)) {
           ty match {
             case RefT(t) => return t
-            case _ => throw NotABoxException("trying to unbox a " + ty.toString)
+            case _ => throw NotABoxTypeException("trying to unbox a " + ty.toString)
           }
         }
 
@@ -152,7 +152,7 @@ object TypeChecker {
               if (t == right) return t
               else throw TypeMissMatchException("Trying to set a box of type " + t.toString + " with a " + right.toString)
             }
-            case _ => throw NotABoxException("using " + s + " with a " + left.toString)
+            case _ => throw NotABoxTypeException("using " + s + " with a " + left.toString)
           }
         }
 
@@ -205,18 +205,18 @@ object TypeChecker {
               return bdt
             }
             else {
-//              println(agrsType.toString())
-//              println(paramst.toString())
+              //              println(agrsType.toString())
+              //              println(paramst.toString())
               throw WrongArgumentTypeException()
             }
           }
-          case _ => throw NotAFunctionException("")
+          case _ => throw NotAFunctionTypeException("")
         }
       }
 
       case LetExt(letbinds, body) => {
-//        letbinds.foreach { case LetBindExt(name, va) => ((TBind(name, typeOf(va, nv)) :: Nil) :: nv) }
-        val newNV = addLetBindsToEnvironment(letbinds , nv)
+        val newNV = letbinds.map { case LetBindExt(name, va) => ((TBind(name, typeOf(va, nv)))) } ::: nv
+        //        val newNV = addLetBindsToEnvironment(letbinds , nv)
         typeOf(body, newNV)
       }
 

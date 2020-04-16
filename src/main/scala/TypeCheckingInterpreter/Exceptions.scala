@@ -37,6 +37,10 @@ case class WrongArgumentTypeException(msg: String = null) extends TypeException(
 
 case class NotAListTypeException(msg: String = null) extends TypeException(msg)
 
+case class NotAFunctionTypeException(msg: String = null) extends TypeException(msg)
+
+case class NotABoxTypeException(msg: String = null) extends TypeException(msg)
+
 
 //Desugaring exceptions
 
