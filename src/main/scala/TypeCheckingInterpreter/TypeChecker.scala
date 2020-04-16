@@ -10,7 +10,7 @@ object TypeChecker {
   val binNumOpsToNum = Set("+", "*", "-")
   val binNumOpsToBool = Set("num=", "num<", "num>")
 
-//  val uniListOpsToType = Set("head", "tail") //this is wrong as head returns type of element in list and tail returns a list
+  //  val uniListOpsToType = Set("head", "tail") //this is wrong as head returns type of element in list and tail returns a list
   val uniListOpsToBool = Set("is-nil")
 
   //dont forget about seq and cons and pair box
@@ -59,14 +59,14 @@ object TypeChecker {
           }
         }
 
-        if(s == "head"){
+        if (s == "head") {
           ty match {
             case ListT(t) => return t
             case _ => throw NotAListTypeException(s + " with a non list")
           }
         }
 
-        if(s == "tail"){
+        if (s == "tail") {
           ty match {
             case ListT(t) => return ty
             case _ => throw NotAListTypeException(s + " with a non list")
@@ -191,7 +191,7 @@ object TypeChecker {
       }
 
       case FdExt(paraml, body) => {
-        val nvNew = addParamsToTypeEnvironment(paraml , nv)
+        val nvNew = addParamsToTypeEnvironment(paraml, nv)
 
         return FunT(paraml.map(e => e.ty), typeOf(body, nvNew))
       }
@@ -232,10 +232,15 @@ object TypeChecker {
 
       case RecLamExt(name, paramTy, retTy, param, body) => {
         val funt = FunT(List(paramTy), retTy)
-        TBind(name, funt) :: nv
-        TBind(param, paramTy) :: nv
 
-        typeOf(body, nv)
+        val newNV = List(TBind(name, funt), TBind(param, paramTy)) ::: nv
+
+        val bodyType = typeOf(body, newNV)
+
+        if (bodyType == retTy) {
+          return funt
+        }
+        else throw TypeMissMatchException("expected recursive function to return: " + retTy + " but got " + bodyType)
       }
 
     }
@@ -244,22 +249,22 @@ object TypeChecker {
   def addParamsToTypeEnvironment(params: List[Param], nv: TEnvironment): TEnvironment = {
     params match {
       case Nil => nv
-      case p@Param(name , ty) :: tail => addParamsToTypeEnvironment(tail , TBind(name , ty) :: nv)
+      case p@Param(name, ty) :: tail => addParamsToTypeEnvironment(tail, TBind(name, ty) :: nv)
     }
   }
 
-  def addLetBindsToEnvironment(binds:List[LetBindExt] , nv: TEnvironment):TEnvironment = {
+  def addLetBindsToEnvironment(binds: List[LetBindExt], nv: TEnvironment): TEnvironment = {
     binds match {
       case Nil => nv
-      case LetBindExt(name , value) :: tail => addLetBindsToEnvironment(tail , TBind(name , typeOf(value , nv)) :: nv)
+      case LetBindExt(name, value) :: tail => addLetBindsToEnvironment(tail, TBind(name, typeOf(value, nv)) :: nv)
     }
   }
 
 
-  def addLetRecBindsToEnvironment(binds:List[LetRecBindExt], nv: TEnvironment):TEnvironment = {
+  def addLetRecBindsToEnvironment(binds: List[LetRecBindExt], nv: TEnvironment): TEnvironment = {
     binds match {
       case Nil => nv
-      case LetRecBindExt(name , ty , value) :: tail => addLetRecBindsToEnvironment(tail , TBind(name , ty) :: nv)
+      case LetRecBindExt(name, ty, value) :: tail => addLetRecBindsToEnvironment(tail, TBind(name, ty) :: nv)
     }
   }
 
@@ -269,7 +274,7 @@ object TypeChecker {
 
         //binds.foreach({ e => TBind(e.name, e.ty) :: nv })
 
-        val newNV = addLetRecBindsToEnvironment(binds , nv)
+        val newNV = addLetRecBindsToEnvironment(binds, nv)
         binds.foreach({ e =>
           if (e.ty != typeOf(e.value, newNV)) {
             throw TypeMissMatchException("in let rec binds the declared type does not match the value type")
