@@ -66,14 +66,6 @@ object Interp {
         }
       }
 
-      //      case IsListC(e) => {
-      //        interp(e, nv, st1) match {
-      //          case (NilV(), st2) => (BoolV(true), st2)
-      //          case (ConsV(h, t), st2) => (BoolV(true), st2)
-      //          case (_, st2) => (BoolV(false), st2)
-      //        }
-      //      }
-
       case AppC(f, args) => {
         val (fun, st2) = interp(f, nv, st1)
 
@@ -123,6 +115,28 @@ object Interp {
       case SeqC(b1, b2) => {
         val (value1, st2) = interp(b1, nv, st1)
         interp(b2, nv, st2)
+      }
+
+      case PairC(l , r) => {
+        val (left, st2) = interp(l, nv, st1)
+        val (right, st3) = interp(r, nv, st2)
+        (PairV(left , right) , st3)
+      }
+
+      case FstC(e) => {
+        val (value , st2) = interp(e , nv , st1)
+        value match {
+          case PairV(l , r) => (l , st2)
+          case _ => throw NotPairException()
+        }
+      }
+
+      case SndC(e) => {
+        val (value , st2) = interp(e , nv , st1)
+        value match {
+          case PairV(l , r) => (r , st2)
+          case _ => throw NotPairException()
+        }
       }
 
       case UninitializedC() => (UninitializedV(), st1)

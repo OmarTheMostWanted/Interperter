@@ -10,7 +10,7 @@ object TypeChecker {
   val binNumOpsToNum = Set("+", "*", "-")
   val binNumOpsToBool = Set("num=", "num<", "num>")
 
-  val uniListOpsToType = Set("head", "tail")
+//  val uniListOpsToType = Set("head", "tail") //this is wrong as head returns type of element in list and tail returns a list
   val uniListOpsToBool = Set("is-nil")
 
   //dont forget about seq and cons and pair box
@@ -30,10 +30,14 @@ object TypeChecker {
       case NumExt(n) => NumT()
       case TrueExt() => BoolT()
       case FalseExt() => BoolT()
+
+
       case IdExt(s) => {
         nv.foreach({ case TBind(name, ty) => if (name == s) return ty })
-        throw IdTypeNotFoundTypeException(s + "has an undefined type")
+        throw IdTypeNotFoundTypeException(s + " has an undefined type")
       }
+
+
       case UnOpExt(s, ex) => {
         val ty = typeOf(ex, nv)
 
@@ -50,14 +54,21 @@ object TypeChecker {
 
         if (uniListOpsToBool.contains(s)) {
           ty match {
-            case ListT(t) => BoolT()
+            case ListT(t) => return BoolT()
+            case _ => throw NotAListTypeException(s + " with a non list")
+          }
+        }
+
+        if(s == "head"){
+          ty match {
+            case ListT(t) => return t
             case _ => throw NotAListException(s + " with a non list")
           }
         }
 
-        if (uniListOpsToType.contains(s)) {
+        if(s == "tail"){
           ty match {
-            case ListT(t) => return t
+            case ListT(t) => return ty
             case _ => throw NotAListException(s + " with a non list")
           }
         }
@@ -85,7 +96,7 @@ object TypeChecker {
           }
         }
 
-        throw TypeMissMatchException("end of uni ops and ended up with" + s + "       " + ty.toString)
+        throw TypeMissMatchException("end of uni ops and ended up with " + s + "       " + ty.toString)
 
 
       }
@@ -169,7 +180,106 @@ object TypeChecker {
         } else throw NotBooleanInIfConditionTypeException("expected condition but got: " + cond.toString)
 
       }
+      case NilExt(typ) => ListT(typ)
+
+      case ListExt(listt, es) => {
+
+        es.foreach(e => if (typeOf(e, nv) != listt) throw TypeMissMatchException("the elements do not match in list"))
+
+        ListT(listt)
+
+      }
+
+      case FdExt(paraml, body) => {
+        val nvNew = addParamsToTypeEnvironment(paraml , nv)
+
+        return FunT(paraml.map(e => e.ty), typeOf(body, nvNew))
+      }
+
+      case AppExt(f, args) => {
+        val ty = typeOf(f, nv)
+        ty match {
+          case FunT(paramst, bdt) => {
+            val agrsType = args.map(e => typeOf(e, nv))
+            if (agrsType.equals(paramst)) {
+              return bdt
+            }
+            else {
+//              println(agrsType.toString())
+//              println(paramst.toString())
+              throw WrongArgumentTypeException()
+            }
+          }
+          case _ => throw NotAFunctionException("")
+        }
+      }
+
+      case LetExt(letbinds, body) => {
+//        letbinds.foreach { case LetBindExt(name, va) => ((TBind(name, typeOf(va, nv)) :: Nil) :: nv) }
+        val newNV = addLetBindsToEnvironment(letbinds , nv)
+        typeOf(body, newNV)
+      }
+
+      case e@LetRecExt(letcrcbind, bod) => letRecType(e, nv)
+
+      case SetExt(id, e) => {
+        val ty = typeOf(e, nv)
+        val st = typeOf(IdExt(id), nv)
+        if (st == ty) {
+          return ty
+        } else throw TypeMissMatchException("Is set expected :" + ty + " but got " + st)
+      }
+
+      case RecLamExt(name, paramTy, retTy, param, body) => {
+        val funt = FunT(List(paramTy), retTy)
+        TBind(name, funt) :: nv
+        TBind(param, paramTy) :: nv
+
+        typeOf(body, nv)
+      }
 
     }
   }
+
+  def addParamsToTypeEnvironment(params: List[Param], nv: TEnvironment): TEnvironment = {
+    params match {
+      case Nil => nv
+      case p@Param(name , ty) :: tail => addParamsToTypeEnvironment(tail , TBind(name , ty) :: nv)
+    }
+  }
+
+  def addLetBindsToEnvironment(binds:List[LetBindExt] , nv: TEnvironment):TEnvironment = {
+    binds match {
+      case Nil => nv
+      case LetBindExt(name , value) :: tail => addLetBindsToEnvironment(tail , TBind(name , typeOf(value , nv)) :: nv)
+    }
+  }
+
+
+  def addLetRecBindsToEnvironment(binds:List[LetRecBindExt], nv: TEnvironment):TEnvironment = {
+    binds match {
+      case Nil => nv
+      case LetRecBindExt(name , ty , value) :: tail => addLetRecBindsToEnvironment(tail , TBind(name , ty) :: nv)
+    }
+  }
+
+  def letRecType(letrec: LetRecExt, nv: TEnvironment): Type = {
+    letrec match {
+      case LetRecExt(binds, body) => {
+
+        //binds.foreach({ e => TBind(e.name, e.ty) :: nv })
+
+        val newNV = addLetRecBindsToEnvironment(binds , nv)
+        binds.foreach({ e =>
+          if (e.ty != typeOf(e.value, newNV)) {
+            throw TypeMissMatchException("in let rec binds the declared type does not match the value type")
+          }
+        })
+
+        return typeOf(body, newNV)
+      }
+    }
+  }
+
+
 }

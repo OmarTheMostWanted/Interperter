@@ -41,23 +41,27 @@ object Desugar {
           //          case "is-list" => IsListC(desugar(e))
           case "box" => BoxC(desugar(e))
           case "unbox" => UnboxC(desugar(e))
+          case "fst" => FstC(desugar(e))
+          case "snd" => SndC(desugar(e))
         }
       }
+
       case IfExt(c, t, e) => IfC(desugar(c), desugar(t), desugar(e))
 
-      //      case ListExt(l) => {
-      //        l match {
-      //          case Nil => NilC()
-      //          case e :: Nil => ConsC(desugar(e), NilC())
-      //          case e :: b => ConsC(desugar(e), desugar(ListExt(b))) // generative recursion
-      //        }
-      //      }
-      //      case NilExt() => NilC()
-      //      case CondExt(l) => {
-      //        condExtDesugar(l)
-      //      }
-      //      case CondEExt(l, e) => condEExtDesugar(l, e)
-      //      case FdExt(l, b) => FdC(l, desugar(b))
+      case ListExt(ty, l) => {
+        l match {
+          case Nil => NilC()
+          case e :: Nil => ConsC(desugar(e), NilC())
+          case e :: b => ConsC(desugar(e), desugar(ListExt(ty, b))) // generative recursion
+        }
+      }
+
+      case NilExt(t) => NilC()
+
+      case FdExt(params, b) => {
+        val paramStrings = params.map({ e => e.name })
+        FdC(paramStrings, desugar(b))
+      }
       case IdExt(c) => IdC(c)
 
       case AppExt(f, args) => AppC(desugar(f), args.map(e => desugar(e)))
@@ -71,10 +75,10 @@ object Desugar {
       }
 
       case SetExt(id, e) => SetC(id, desugar(e))
-      //      case RecLamExt(name, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
+      case RecLamExt(name, paramTy, retTy, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
 
-      //      case LetRecExt(binds, body) => AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, makebody(binds, desugar(body))),
-      //        binds map (_ => UninitializedC())) //fill with UninitializedC()
+            case LetRecExt(binds, body) => AppC(FdC(binds.map { case LetRecBindExt(s , t , v) => s case _ => throw LetRecException("") }, makebody(binds, desugar(body))),
+              binds map (_ => UninitializedC())) //fill with UninitializedC()
 
       //            case LetRecExt(binds, body) => LetRecExtConvert(binds, body)
 
@@ -90,28 +94,12 @@ object Desugar {
 
   // call by value Y its actually Z because its eager
   //Y combinator: (lambda (f) ((lambda (x) (x x)) (lambda (x) (f (lambda (y) ((x x) y))))))
-  //  def Y = desugar(FdExt(List("f"), AppExt(FdExt(List("x"), AppExt(IdExt("x"), List(IdExt("x")))), List(FdExt(List("x"), AppExt(IdExt("f"), List(FdExt(List("y"), AppExt(AppExt(IdExt("x"), List(IdExt("x"))), List(IdExt("y")))))))))))
+  def Y = FdC(List("f"), AppC(FdC(List("x"), AppC(IdC("x"), List(IdC("x")))), List(FdC(List("x"), AppC(IdC("f"), List(FdC(List("y"), AppC(AppC(IdC("x"), List(IdC("x"))), List(IdC("y"))))))))))
 
-  //  def condEExtDesugar(list: List[(ExprExt, ExprExt)], e: ExprExt): ExprC = {
-  //    list match {
-  //      case Nil => throw CondEExtDesugarException("nothing before else")
-  //      case (c, t) :: Nil => IfC(desugar(c), desugar(t), desugar(e))
-  //      case (c, t) :: f => IfC(desugar(c), desugar(t), condEExtDesugar(f, e))
-  //    }
-  //  }
-
-  //  def condExtDesugar(list: List[(ExprExt, ExprExt)]): ExprC = {
-  //    list match {
-  //      case Nil => NilC()
-  //      case (c, t) :: Nil => IfC(desugar(c), desugar(t), UninitializedC())
-  //      case (c, t) :: e => IfC(desugar(c), desugar(t), condExtDesugar(e))
-  //    }
-  //  }
-
-  def makebody(binds: List[LetBindExt], body: ExprC): ExprC =
+  def makebody(binds: List[LetRecBindExt], body: ExprC): ExprC =
     binds match {
       case Nil => body
-      case LetBindExt(n, v) :: tail =>
+      case LetRecBindExt(n , t, v) :: tail =>
         SeqC(SetC(n, desugar(v)), makebody(tail, body))
     }
 
