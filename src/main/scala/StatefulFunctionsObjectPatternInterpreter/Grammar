@@ -1,0 +1,56 @@
+context-free syntax
+
+  Expr.NumExt       = INT      // integer literals
+  Expr.TrueExt      = [true]
+  Expr.FalseExt     = [false]
+  Expr.IdExt        = ID
+
+  Expr.UnOpExt      = [([UnOp] [Expr])]
+  Expr.BinOpExt     = [([BinOp] [Expr] [Expr])]
+
+  UnOp.MIN          = [-]
+  UnOp.NOT          = [not]
+  UnOp.HEAD         = [head]
+  UnOp.TAIL         = [tail]
+  UnOp.ISNIL        = [is-nil]
+  UnOp.ISLIST       = [is-list]
+
+  UnOp.BOX          = [box]
+  UnOp.UNBOX        = [unbox]
+
+  BinOp.PLUS        = [+]
+  BinOp.MULT        = [*]
+  BinOp.MINUS       = [-]
+  BinOp.AND         = [and]
+  BinOp.OR          = [or]
+  BinOp.NUMEQ       = [num=]
+  BinOp.NUMLT       = [num<]
+  BinOp.NUMGT       = [num>]
+  BinOp.CONS        = [cons]
+
+  BinOp.SETBOX      = [setbox]
+  BinOp.SEQ         = [seq]
+
+  Expr.IfExt        = [(if [Expr] [Expr] [Expr])]
+
+  Expr.NilExt       = [nil]
+  Expr.ListExt      = [(list [Expr*])]
+
+  Expr.FdExt        = [(lambda ([ID*]) [Expr])]
+  Expr.AppExt       = [([Expr] [Expr*])]
+  Expr.LetExt       = [(let ([LetBind+]) [Expr])]
+  Expr.Set          = [(set [ID] [Expr])]
+  LetBind.LetBindExt = [([ID] [Expr])]
+
+  Expr.RecLamExt    = [(rec-lam [ID] ([ID]) [Expr])]
+
+  Expr.LetRecExt     = [(letrec ([LetBind+]) [Expr])]
+
+  Expr.StringExt    = STRING // string literal values, marked by double quotes; i.e., "somestring"
+  Expr.ObjectExt    = [(object ([FieldExt+]) ([MethodExt+]))]
+  Expr.ObjectDelExt = [(object-del [Expr] ([FieldExt*]) ([MethodExt+]))]
+  Expr.MsgExt       = [(msg [Expr] [ID] [Expr*])]
+  Expr.DoSeqExt     = [(do-seq [Expr+])]
+
+  Object.FieldExt   = [(field [ID] [Expr])]
+  Object.MethodExt  = [(method [ID] ([ID*]) [Expr])]
