@@ -95,11 +95,9 @@ object Parser {
         case SList(SSym(s) :: elseBranch :: Nil) :: Nil if s == "else" =>
           throw ParseExc("Cond with just else branch!")
 
-        case branches :+ SList(SSym(s) :: elseBranch :: Nil) if s == "else" =>
-          CondEExt(parseCond(branches), parse(elseBranch))
+        //        case branches :+ SList(SSym(s) :: elseBranch :: Nil) if s == "else" => CondEExt(parseCond(branches), parse(elseBranch))
 
-        case _ =>
-          CondExt(parseCond(tail))
+//        case _ => CondExt(parseCond(tail))
       }
 
     //lambda

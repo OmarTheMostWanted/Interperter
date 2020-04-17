@@ -26,5 +26,5 @@ case class SetC(v: String, b: ExprC) extends ExprC
 case class SeqC(b1: ExprC, b2: ExprC) extends ExprC
 case class UninitializedC() extends ExprC
 case class EqStrC(l: ExprC, r: ExprC) extends ExprC
-case class ConcStrC(l: ExprC, r: Expr) extends ExprC
+case class ConcStrC(l: ExprC, r: ExprC) extends ExprC
 case class StringC(str: String) extends ExprC

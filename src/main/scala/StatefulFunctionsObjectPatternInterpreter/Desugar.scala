@@ -53,10 +53,9 @@ object Desugar {
         }
       }
       case NilExt() => NilC()
-      case CondExt(l) => {
-        condExtDesugar(l)
-      }
-      case CondEExt(l, e) => condEExtDesugar(l, e)
+//      case CondExt(l) => condExtDesugar(l)
+
+//      case CondEExt(l, e) => condEExtDesugar(l, e)
       case FdExt(l, b) => FdC(l, desugar(b))
       case IdExt(c) => IdC(c)
 
