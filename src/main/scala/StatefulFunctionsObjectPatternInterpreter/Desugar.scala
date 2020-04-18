@@ -1,6 +1,9 @@
 package StatefulFunctionsObjectPatternInterpreter
 
 object Desugar {
+
+//  case class UnIni() extends ExprExt()
+
   def desugar(e: ExprExt): ExprC = {
 
     e match {
@@ -27,6 +30,8 @@ object Desugar {
           case "cons" => ConsC(desugar(l), desugar(r))
           case "setbox" => SetboxC(desugar(l), desugar(r))
           case "seq" => SeqC(desugar(l), desugar(r))
+          case "str=" => EqStrC(desugar(l), desugar(r))
+          case "str++" => ConcStrC(desugar(l), desugar(r))
         }
       }
       case UnOpExt(s, e) => {
@@ -77,9 +82,36 @@ object Desugar {
 
       case LetRecExt(binds, body) => LetRecExtConvert(binds, body)
 
+      case StringExt(s) => StringC(s)
+
+      case ObjectExt(fields , methods) => {
+
+        SeqC(AppC(FdC(fields.map { case FieldExt(s, e) => s case _ => throw ObjectFieldNameException("") }, UninitializedC()), fields.map { case FieldExt(s, e) => UninitializedC() })
+          , AppC(FdC(fields.map { case FieldExt(s, e) => s }, FdC(List("0msg") , creatMethodNames(methods))), fields.map { case FieldExt(s, e) => desugar(e) }))
+      }
+
+      case MsgExt(recvr, msg, args) => {
+
+        AppC(AppC(desugar(recvr) , List(StringC(msg))), args.map(e => desugar(e)))
+
+
+//        val obj = desugar(recvr)
+//        print(obj)
+//        obj match {
+//          case SeqC(_ , r@AppC(FdC(v,FdC(l@List("0msg") , b)) , b1)) => AppC(AppC(obj , List(StringC(msg))), args.map(e => desugar(e)))
+//          case _ => throw NotObjectException()
+//        }
+      }
       case _ => UninitializedC()
     }
 
+  }
+
+  def creatMethodNames(methods:List[MethodExt]):IfC = {
+    methods match {
+      case Nil => IfC(UndefinedC() , UndefinedC() , UndefinedC())
+      case MethodExt(name , args , body) :: tail => IfC(EqStrC(StringC(name) , IdC("0msg")) , FdC(args , desugar(body)) , creatMethodNames(tail))
+    }
   }
 
   def LetRecExtConvert(binds: List[LetBindExt], body: ExprExt): ExprC = {

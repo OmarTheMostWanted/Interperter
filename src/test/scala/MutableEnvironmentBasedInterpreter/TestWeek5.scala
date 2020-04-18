@@ -1,6 +1,5 @@
 package MutableEnvironmentBasedInterpreter
 
-import MutableEnvironmentBasedInterpreter.Interp.Store
 import org.scalatest._
 
 class TestWeek5 extends FunSuite {
