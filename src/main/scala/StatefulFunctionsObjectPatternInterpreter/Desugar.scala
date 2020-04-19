@@ -2,7 +2,7 @@ package StatefulFunctionsObjectPatternInterpreter
 
 object Desugar {
 
-//  case class UnIni() extends ExprExt()
+  //  case class UnIni() extends ExprExt()
 
   def desugar(e: ExprExt): ExprC = {
 
@@ -58,14 +58,15 @@ object Desugar {
         }
       }
       case NilExt() => NilC()
-//      case CondExt(l) => condExtDesugar(l)
+      case CondExt(l) => condExtDesugar(l)
+      case CondEExt(l, e) => condEExtDesugar(l, e)
 
-//      case CondEExt(l, e) => condEExtDesugar(l, e)
       case FdExt(l, b) => FdC(l, desugar(b))
       case IdExt(c) => IdC(c)
 
       case AppExt(f, args) => AppC(desugar(f), args.map(e => desugar(e)))
 
+      case DoSeqExt(l) =>sequentialDoExpressions(l)
       case LetExt(binds, body) => {
         AppC(FdC(binds.map {
           case LetBindExt(s, e) => s
@@ -77,43 +78,72 @@ object Desugar {
       case SetExt(id, e) => SetC(id, desugar(e))
       case RecLamExt(name, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
 
-      //      case LetRecExt(binds, body) => AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, makebody(binds, desugar(body))),
-      //        binds map (_ => UninitializedC())) //fill with UninitializedC()
-
-      case LetRecExt(binds, body) => LetRecExtConvert(binds, body)
+      case LetRecExt(binds, body) =>
+        AppC(FdC(binds.map(e => e.name), createLecRec(binds, desugar(body))),
+          binds map (_ => UninitializedC()))
 
       case StringExt(s) => StringC(s)
 
-      case ObjectExt(fields , methods) => {
+      case ObjectExt(fields, methods) => {
 
-        SeqC(AppC(FdC(fields.map { case FieldExt(s, e) => s case _ => throw ObjectFieldNameException("") }, UninitializedC()), fields.map { case FieldExt(s, e) => UninitializedC() })
-          , AppC(FdC(fields.map { case FieldExt(s, e) => s }, FdC(List("0msg") , creatMethodNames(methods))), fields.map { case FieldExt(s, e) => desugar(e) }))
+        val res = desugar(LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondExt(generateCondStatments(methods)))))
+        res
       }
 
       case MsgExt(recvr, msg, args) => {
 
-        AppC(AppC(desugar(recvr) , List(StringC(msg))), args.map(e => desugar(e)))
+        val obj = LetRecExt(LetBindExt("self", recvr) :: Nil, IdExt("self"))
+
+        println(obj)
+
+        val res = desugar(AppExt(AppExt( obj , StringExt(msg) :: Nil) , args))
 
 
-//        val obj = desugar(recvr)
-//        print(obj)
-//        obj match {
-//          case SeqC(_ , r@AppC(FdC(v,FdC(l@List("0msg") , b)) , b1)) => AppC(AppC(obj , List(StringC(msg))), args.map(e => desugar(e)))
-//          case _ => throw NotObjectException()
-//        }
+        return res
+
+      }
+
+      case ObjectDelExt(del, fields, methods) => {
+
+        val res = desugar(LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondEExt(generateCondStatments(methods), AppExt(del, (StringExt("0msg") :: Nil))))))
+        res
+
       }
       case _ => UninitializedC()
     }
 
   }
 
-  def creatMethodNames(methods:List[MethodExt]):IfC = {
-    methods match {
-      case Nil => IfC(UndefinedC() , UndefinedC() , UndefinedC())
-      case MethodExt(name , args , body) :: tail => IfC(EqStrC(StringC(name) , IdC("0msg")) , FdC(args , desugar(body)) , creatMethodNames(tail))
+  def sequentialDoExpressions(list : List[ExprExt]):ExprC = {
+    list match {
+      case e :: Nil => desugar(e)
+      case e :: e1 :: Nil => SeqC(desugar(e) , desugar(e1))
+      case e :: e1 :: tail => SeqC(desugar(e) , SeqC(desugar(e1) , sequentialDoExpressions(tail)))
     }
   }
 
+  def generateCondStatments(methods: List[MethodExt]): List[(ExprExt, ExprExt)] = {
+    methods match {
+      case Nil => Nil
+      case MethodExt(name, args, body) :: tail => (BinOpExt("str=", StringExt(name), IdExt("0msg")), FdExt(args, body)) :: generateCondStatments(tail)
+    }
+  }
+
+  def generateIfStatmentsWithDelegation(del: ExprExt, methods: List[MethodExt]): IfC = {
+    methods match {
+      case Nil => IfC(TrueC(), AppC(desugar(del), IdC("0msg") :: Nil), UndefinedC())
+      case MethodExt(name, args, body) :: tail => IfC(EqStrC(StringC(name), IdC("0msg")), FdC(args, desugar(body)), generateIfStatments(tail))
+    }
+  }
+
+  def generateIfStatments(methods: List[MethodExt]): IfC = {
+    methods match {
+      case Nil => IfC(UndefinedC(), UndefinedC(), UndefinedC())
+      case MethodExt(name, args, body) :: tail => IfC(EqStrC(StringC(name), IdC("0msg")), FdC(args, desugar(body)), generateIfStatments(tail))
+    }
+  }
+
+  //this is broken idk y
   def LetRecExtConvert(binds: List[LetBindExt], body: ExprExt): ExprC = {
     SeqC(AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, UninitializedC()), binds.map { case LetBindExt(s, e) => UninitializedC() }), AppC(FdC(binds.map { case LetBindExt(s, e) => s }, desugar(body)), binds.map { case LetBindExt(s, e) => desugar(e) }))
   }
@@ -139,11 +169,11 @@ object Desugar {
     }
   }
 
-  def makebody(binds: List[LetBindExt], body: ExprC): ExprC =
+  def createLecRec(binds: List[LetBindExt], body: ExprC): ExprC =
     binds match {
       case Nil => body
-      case LetBindExt(n, v) :: tail =>
-        SeqC(SetC(n, desugar(v)), makebody(tail, body))
+      case LetBindExt(name, value) :: tail =>
+        SeqC(SetC(name, desugar(value)), createLecRec(tail, body))
     }
 
 }

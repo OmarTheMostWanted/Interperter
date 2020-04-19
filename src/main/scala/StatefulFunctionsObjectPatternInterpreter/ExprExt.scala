@@ -30,6 +30,10 @@ case class DoSeqExt(expr: List[ExprExt]) extends ExprExt
 
 case class LetBindExt(name: String, value: ExprExt)
 
+case class CondExt(cs: List[(ExprExt, ExprExt)]) extends ExprExt
+
+case class CondEExt(cs: List[(ExprExt, ExprExt)], e: ExprExt) extends ExprExt
+
 object ExprExt {
   val binOps = Set("+", "*", "-", "and", "or", "num=", "num<", "num>",
     "cons", "setbox", "seq", "str=", "str++")
