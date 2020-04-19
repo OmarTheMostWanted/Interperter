@@ -90,11 +90,11 @@ object Parser {
         case SList(SSym(s) :: elseBranch :: Nil) :: Nil if s == "else" =>
           throw ParseExc("Cond with just else branch!")
 
-        case branches :+ SList(SSym(s) :: elseBranch :: Nil) if s == "else" =>
-          CondEExt(parseCond(branches), parse(elseBranch))
-
-        case _ =>
-          CondExt(parseCond(tail))
+//        case branches :+ SList(SSym(s) :: elseBranch :: Nil) if s == "else" =>
+//          CondEExt(parseCond(branches), parse(elseBranch))
+//
+//        case _ =>
+//          CondExt(parseCond(tail))
       }
 
     //lambda
@@ -111,8 +111,8 @@ object Parser {
       LetRecExt(parseBinders(binds), parse(tail))
 
     //rec-lambda
-    case SList(SSym("rec-lam") :: SSym(name) :: SList(SSym(param) :: Nil) :: body :: Nil) =>
-      RecLamExt(isReserved(name), isReserved(param), parse(body))
+//    case SList(SSym("rec-lam") :: SSym(name) :: SList(SSym(param) :: Nil) :: body :: Nil) =>
+//      RecLamExt(isReserved(name), isReserved(param), parse(body))
 
     //unary operation
     case SList(SSym(s) :: t1 :: Nil)

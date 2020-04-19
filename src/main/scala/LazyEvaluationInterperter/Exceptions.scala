@@ -7,6 +7,9 @@ abstract class ParseException(msg: String = null) extends Exception(msg)
 
 case class ParseExc(msg: String = null) extends ParseException
 
+case class NotImplementedException(s: String) extends RuntimeException(s)
+
+
 case class CustomParseException(msg: String = null) extends ParseException(msg)
 
 abstract class DesugarException(msg: String = null) extends Exception(msg)

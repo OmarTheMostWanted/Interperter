@@ -95,6 +95,7 @@ object Desugar {
 
       case MsgExt(recvr, msg, args) => {
 
+        //to keep the same reference with both in apps
         val obj = LetRecExt(LetBindExt("0obj", recvr) :: Nil, AppExt(AppExt( IdExt("0obj") , StringExt(msg) :: Nil) , IdExt("0obj") :: args))
         desugar(obj)
         ////        println(obj)

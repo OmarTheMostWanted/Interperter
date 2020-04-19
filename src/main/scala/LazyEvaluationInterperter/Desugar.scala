@@ -38,6 +38,8 @@ object Desugar {
           case "tail" => TailC(desugar(e))
           case "is-nil" => IsNilC(desugar(e))
           case "is-list" => IsListC(desugar(e))
+          case "force" => ForceC(desugar(e))
+
         }
       }
       case IfExt(c, t, e) => IfC(desugar(c), desugar(t), desugar(e))
@@ -50,10 +52,10 @@ object Desugar {
         }
       }
       case NilExt() => NilC()
-      case CondExt(l) => {
-        condExtDesugar(l)
-      }
-      case CondEExt(l, e) => condEExtDesugar(l, e)
+//      case CondExt(l) => {
+//        condExtDesugar(l)
+//      }
+//      case CondEExt(l, e) => condEExtDesugar(l, e)
       case FdExt(l, b) => FdC(l, desugar(b))
       case IdExt(c) => IdC(c)
 
@@ -66,30 +68,32 @@ object Desugar {
           case LetBindExt(s, e) => desugar(e)
         })
       }
-      case RecLamExt(name, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
 
-      case _ => UndefinedC()
+      case LetRecExt(binds , body) => LetRecC(binds.map(e => LetBindC(e.name , desugar(e.value))) , desugar(body))
+//      case RecLamExt(name, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
+
+//      case _ => UndefinedC()
     }
 
   }
 
   // call by value Y its actually Z because its eager
   //Y combinator: (lambda (f) ((lambda (x) (x x)) (lambda (x) (f (lambda (y) ((x x) y))))))
-  def Y = desugar(FdExt(List("f"), AppExt(FdExt(List("x"), AppExt(IdExt("x"), List(IdExt("x")))), List(FdExt(List("x"), AppExt(IdExt("f"), List(FdExt(List("y"), AppExt(AppExt(IdExt("x"), List(IdExt("x"))), List(IdExt("y")))))))))))
+//  def Y = desugar(FdExt(List("f"), AppExt(FdExt(List("x"), AppExt(IdExt("x"), List(IdExt("x")))), List(FdExt(List("x"), AppExt(IdExt("f"), List(FdExt(List("y"), AppExt(AppExt(IdExt("x"), List(IdExt("x"))), List(IdExt("y")))))))))))
 
-  def condEExtDesugar(list: List[(ExprExt, ExprExt)], e: ExprExt): ExprC = {
-    list match {
-      case Nil => throw CustomDesugarException("nothing before else")
-      case (c, t) :: Nil => IfC(desugar(c), desugar(t), desugar(e))
-      case (c, t) :: f => IfC(desugar(c), desugar(t), condEExtDesugar(f, e))
-    }
-  }
+//  def condEExtDesugar(list: List[(ExprExt, ExprExt)], e: ExprExt): ExprC = {
+//    list match {
+//      case Nil => throw CustomDesugarException("nothing before else")
+//      case (c, t) :: Nil => IfC(desugar(c), desugar(t), desugar(e))
+//      case (c, t) :: f => IfC(desugar(c), desugar(t), condEExtDesugar(f, e))
+//    }
+//  }
 
-  def condExtDesugar(list: List[(ExprExt, ExprExt)]): ExprC = {
-    list match {
-      case Nil => NilC()
-      case (c, t) :: Nil => IfC(desugar(c), desugar(t), UndefinedC())
-      case (c, t) :: e => IfC(desugar(c), desugar(t), condExtDesugar(e))
-    }
-  }
+//  def condExtDesugar(list: List[(ExprExt, ExprExt)]): ExprC = {
+//    list match {
+//      case Nil => NilC()
+//      case (c, t) :: Nil => IfC(desugar(c), desugar(t), UndefinedC())
+//      case (c, t) :: e => IfC(desugar(c), desugar(t), condExtDesugar(e))
+//    }
+//  }
 }
