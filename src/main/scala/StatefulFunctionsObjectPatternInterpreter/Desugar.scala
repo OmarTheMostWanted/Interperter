@@ -1,7 +1,6 @@
 package StatefulFunctionsObjectPatternInterpreter
 
 object Desugar {
-
   //  case class UnIni() extends ExprExt()
 
   def desugar(e: ExprExt): ExprC = {
@@ -80,33 +79,39 @@ object Desugar {
 
       case LetRecExt(binds, body) =>
         AppC(FdC(binds.map(e => e.name), createLecRec(binds, desugar(body))),
-          binds map (_ => UninitializedC()))
+          binds.map(e => UninitializedC()))
 
       case StringExt(s) => StringC(s)
 
       case ObjectExt(fields, methods) => {
 
-        val res = desugar(LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondExt(generateCondStatments(methods)))))
-        res
+        //        val res = desugar(LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondExt(generateCondStatments(methods)))))
+
+        val res = LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondExt(generateCondStatments(methods))))
+        val obj = LetRecExt(LetBindExt("self", res) :: Nil, IdExt("self"))
+
+        desugar(res)
       }
 
       case MsgExt(recvr, msg, args) => {
 
-        val obj = LetRecExt(LetBindExt("self", recvr) :: Nil, IdExt("self"))
-
-        println(obj)
-
-        val res = desugar(AppExt(AppExt( obj , StringExt(msg) :: Nil) , args))
-
-
-        return res
+        val obj = LetRecExt(LetBindExt("0obj", recvr) :: Nil, AppExt(AppExt( IdExt("0obj") , StringExt(msg) :: Nil) , IdExt("0obj") :: args))
+        desugar(obj)
+        ////        println(obj)
+        //
+        //        val res = desugar(AppExt(AppExt( recvr , StringExt(msg) :: Nil) , recvr :: args))
+        ////        val res1 = AppC(AppC())
+        ////        val res = desugar(LetRecExt(LetBindExt("self" , recvr) :: Nil , AppExt(AppExt( recvr , StringExt(msg) :: Nil) , recvr :: args)))
+        //        return res
 
       }
 
       case ObjectDelExt(del, fields, methods) => {
 
-        val res = desugar(LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondEExt(generateCondStatments(methods), AppExt(del, (StringExt("0msg") :: Nil))))))
-        res
+        val res = LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondEExt(generateCondStatments(methods), AppExt(del, (IdExt("0msg") :: Nil)))))
+        val obj = LetRecExt(LetBindExt("self", res) :: Nil, IdExt("self"))
+
+        desugar(obj)
 
       }
       case _ => UninitializedC()
@@ -125,7 +130,9 @@ object Desugar {
   def generateCondStatments(methods: List[MethodExt]): List[(ExprExt, ExprExt)] = {
     methods match {
       case Nil => Nil
-      case MethodExt(name, args, body) :: tail => (BinOpExt("str=", StringExt(name), IdExt("0msg")), FdExt(args, body)) :: generateCondStatments(tail)
+      case MethodExt(name, args, body) :: tail => (BinOpExt("str=", StringExt(name), IdExt("0msg")), FdExt("self" :: args, body)) :: generateCondStatments(tail)
+      //      case MethodExt(name, args, body) :: tail => (BinOpExt("str=", StringExt(name), IdExt("0msg")), FdExt( args, body)) :: generateCondStatments(tail)
+
     }
   }
 

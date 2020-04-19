@@ -100,4 +100,54 @@ class TestWeek5 extends FunSuite {
         "(letrec ((even (lambda (x) (if (num= x 0) true (if (num= x 1) false (odd (- x 1)))))) (odd (lambda (x) (if (num= x 0) false (if (num= x 1) true (even (- x 1))))))) (list even odd))")
     }
   }
+
+  test("Summing values, imperatively") {
+    assertResult(NumV(15)) {
+      interp(
+        """(let
+ ((sumto  (box 0))
+  (countv (box 0))
+  (sumv   (box 0))
+  (nop    0)
+  (runsum (box 0))
+ )
+ (seq
+  (setbox
+   runsum
+   (lambda ()
+     (if (num= (unbox countv) (unbox sumto))
+       nop
+       (seq (seq (setbox countv (+ (unbox countv) 1))
+                 (setbox sumv   (+ (unbox sumv  ) (unbox countv))))
+            ((unbox runsum)))
+     )
+   )
+  )
+  (seq (setbox sumto 5)
+       (seq ((unbox runsum))
+            (unbox sumv)
+       )
+  )
+ )
+)
+""")
+    }
+  }
+
+  test("imperative fibonacci"){
+    assertResult(NumV(5)){
+      interp("""(let ((a 0) (b 1) (sum 0))
+  (letrec
+    ((fib
+      (lambda (n)
+        (if (or (num= n 0) (num= n 1))
+          sum
+          (seq (set sum (+ a b))
+          (seq (set a b)
+          (seq (set b sum)
+              (fib (- n 1)))))))))
+      (fib 5)))""")
+    }
+  }
+
 }

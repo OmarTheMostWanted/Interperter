@@ -1,4 +1,4 @@
-package MutableEnvironmentBasedInterpreter
+package LazyEvaluationInterperter
 
 object Desugar {
   def desugar(e: ExprExt): ExprC = {
@@ -22,11 +22,10 @@ object Desugar {
           }
           case "num=" => EqNumC(desugar(l), desugar(r))
           case "num<" => LtC(desugar(l), desugar(r))
-          //case "num>" => LtC(desugar(r), desugar(l)) now that the order matters we cant just flip them
-          case "num>" => LtC(MultC(NumC(-1), desugar(l)), MultC(NumC(-1), desugar(r)))
+          case "num>" => LtC(desugar(r), desugar(l))
+
           case "cons" => ConsC(desugar(l), desugar(r))
-          case "setbox" => SetboxC(desugar(l), desugar(r))
-          case "seq" => SeqC(desugar(l), desugar(r))
+
         }
       }
       case UnOpExt(s, e) => {
@@ -39,8 +38,6 @@ object Desugar {
           case "tail" => TailC(desugar(e))
           case "is-nil" => IsNilC(desugar(e))
           case "is-list" => IsListC(desugar(e))
-          case "box" => BoxC(desugar(e))
-          case "unbox" => UnboxC(desugar(e))
         }
       }
       case IfExt(c, t, e) => IfC(desugar(c), desugar(t), desugar(e))
@@ -69,23 +66,11 @@ object Desugar {
           case LetBindExt(s, e) => desugar(e)
         })
       }
-
-      case SetExt(id, e) => SetC(id, desugar(e))
       case RecLamExt(name, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
 
-      case LetRecExt(binds, body) => AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, makebody(binds, desugar(body))),
-        binds map (_ => UninitializedC())) //fill with UninitializedC()
-
-      //this does not work as the environment gets lost between b1 and b2 of SeqC, the idea was to put the binds in the environment and then set there value(after making sure that all the pointers are in the environment its possible to use recusive data even on uninisilaied data)
-      //case LetRecExt(binds, body) => LetRecExtConvert(binds, body)
-
-      case _ => UninitializedC()
+      case _ => UndefinedC()
     }
 
-  }
-
-  def LetRecExtConvert(binds: List[LetBindExt], body: ExprExt): ExprC = {
-    SeqC(AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, UninitializedC()), binds.map { case LetBindExt(s, e) => UninitializedC() }), AppC(FdC(binds.map { case LetBindExt(s, e) => s }, desugar(body)), binds.map { case LetBindExt(s, e) => desugar(e) }))
   }
 
   // call by value Y its actually Z because its eager
@@ -94,7 +79,7 @@ object Desugar {
 
   def condEExtDesugar(list: List[(ExprExt, ExprExt)], e: ExprExt): ExprC = {
     list match {
-      case Nil => throw CondEExtDesugarException("nothing before else")
+      case Nil => throw CustomDesugarException("nothing before else")
       case (c, t) :: Nil => IfC(desugar(c), desugar(t), desugar(e))
       case (c, t) :: f => IfC(desugar(c), desugar(t), condEExtDesugar(f, e))
     }
@@ -103,16 +88,8 @@ object Desugar {
   def condExtDesugar(list: List[(ExprExt, ExprExt)]): ExprC = {
     list match {
       case Nil => NilC()
-      case (c, t) :: Nil => IfC(desugar(c), desugar(t), UninitializedC())
+      case (c, t) :: Nil => IfC(desugar(c), desugar(t), UndefinedC())
       case (c, t) :: e => IfC(desugar(c), desugar(t), condExtDesugar(e))
     }
   }
-
-  def makebody(binds: List[LetBindExt], body: ExprC): ExprC =
-    binds match {
-      case Nil => body
-      case LetBindExt(n, v) :: tail =>
-        SeqC(SetC(n, desugar(v)), makebody(tail, body))
-    }
-
 }

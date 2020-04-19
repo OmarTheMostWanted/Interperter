@@ -8,6 +8,7 @@ object Interp {
   def interp(e: ExprC): Value = interp(e, Nil, Nil)._1
 
   def interp(e: ExprC, nv: PointerEnvironment, st1: Store): (Value, Store) = {
+
     e match {
       case TrueC() => (BoolV(true), st1)
       case FalseC() => (BoolV(false), st1)
@@ -111,7 +112,7 @@ object Interp {
             interp(body, newEN ::: nv_clos, st3)
 
           }
-          case _ => throw NotAFunctionException(fun.toString + " is not a function")
+          case _ => throw NotAFunctionException("in "+  app+ "  " + fun.toString + " is not a function")
         }
 
       }
