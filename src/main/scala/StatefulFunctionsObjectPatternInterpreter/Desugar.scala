@@ -1,6 +1,8 @@
-package MutableEnvironmentBasedInterpreter
+package StatefulFunctionsObjectPatternInterpreter
 
 object Desugar {
+  //  case class UnIni() extends ExprExt()
+
   def desugar(e: ExprExt): ExprC = {
 
     e match {
@@ -27,6 +29,8 @@ object Desugar {
           case "cons" => ConsC(desugar(l), desugar(r))
           case "setbox" => SetboxC(desugar(l), desugar(r))
           case "seq" => SeqC(desugar(l), desugar(r))
+          case "str=" => EqStrC(desugar(l), desugar(r))
+          case "str++" => ConcStrC(desugar(l), desugar(r))
         }
       }
       case UnOpExt(s, e) => {
@@ -53,15 +57,15 @@ object Desugar {
         }
       }
       case NilExt() => NilC()
-      case CondExt(l) => {
-        condExtDesugar(l)
-      }
+      case CondExt(l) => condExtDesugar(l)
       case CondEExt(l, e) => condEExtDesugar(l, e)
+
       case FdExt(l, b) => FdC(l, desugar(b))
       case IdExt(c) => IdC(c)
 
       case AppExt(f, args) => AppC(desugar(f), args.map(e => desugar(e)))
 
+      case DoSeqExt(l) =>sequentialDoExpressions(l)
       case LetExt(binds, body) => {
         AppC(FdC(binds.map {
           case LetBindExt(s, e) => s
@@ -73,20 +77,85 @@ object Desugar {
       case SetExt(id, e) => SetC(id, desugar(e))
       case RecLamExt(name, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
 
-      case LetRecExt(binds, body) => AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, makebody(binds, desugar(body))),
-        binds map (_ => UninitializedC())) //fill with UninitializedC()
+      case LetRecExt(binds, body) =>
+        AppC(FdC(binds.map(e => e.name), createLecRec(binds, desugar(body))),
+          binds.map(e => UninitializedC()))
 
-      //this does not work as the environment gets lost between b1 and b2 of SeqC, the idea was to put the binds in the environment and then set there value(after making sure that all the pointers are in the environment its possible to use recusive data even on uninisilaied data)
-      //case LetRecExt(binds, body) => LetRecExtConvert(binds, body)
+      case StringExt(s) => StringC(s)
 
+      case ObjectExt(fields, methods) => {
+
+        //        val res = desugar(LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondExt(generateCondStatments(methods)))))
+
+        val res = LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondExt(generateCondStatments(methods))))
+        val obj = LetRecExt(LetBindExt("self", res) :: Nil, IdExt("self"))
+
+        desugar(res)
+      }
+
+      case MsgExt(recvr, msg, args) => {
+
+        //to keep the same reference with both in apps
+        val obj = LetRecExt(LetBindExt("0obj", recvr) :: Nil, AppExt(AppExt( IdExt("0obj") , StringExt(msg) :: Nil) , IdExt("0obj") :: args))
+        desugar(obj)
+        ////        println(obj)
+        //
+        //        val res = desugar(AppExt(AppExt( recvr , StringExt(msg) :: Nil) , recvr :: args))
+        ////        val res1 = AppC(AppC())
+        ////        val res = desugar(LetRecExt(LetBindExt("self" , recvr) :: Nil , AppExt(AppExt( recvr , StringExt(msg) :: Nil) , recvr :: args)))
+        //        return res
+
+      }
+
+      case ObjectDelExt(del, fields, methods) => {
+
+        val res = LetRecExt(fields.map(e => LetBindExt(e.name, e.value)), FdExt(List("0msg"), CondEExt(generateCondStatments(methods), AppExt(del, (IdExt("0msg") :: Nil)))))
+        val obj = LetRecExt(LetBindExt("self", res) :: Nil, IdExt("self"))
+
+        desugar(obj)
+
+      }
       case _ => UninitializedC()
     }
 
   }
 
+  def sequentialDoExpressions(list : List[ExprExt]):ExprC = {
+    list match {
+      case e :: Nil => desugar(e)
+      case e :: e1 :: Nil => SeqC(desugar(e) , desugar(e1))
+      case e :: e1 :: tail => SeqC(desugar(e) , SeqC(desugar(e1) , sequentialDoExpressions(tail)))
+    }
+  }
+
+  def generateCondStatments(methods: List[MethodExt]): List[(ExprExt, ExprExt)] = {
+    methods match {
+      case Nil => Nil
+      case MethodExt(name, args, body) :: tail => (BinOpExt("str=", StringExt(name), IdExt("0msg")), FdExt("self" :: args, body)) :: generateCondStatments(tail)
+      //      case MethodExt(name, args, body) :: tail => (BinOpExt("str=", StringExt(name), IdExt("0msg")), FdExt( args, body)) :: generateCondStatments(tail)
+
+    }
+  }
+
+  def generateIfStatmentsWithDelegation(del: ExprExt, methods: List[MethodExt]): IfC = {
+    methods match {
+      case Nil => IfC(TrueC(), AppC(desugar(del), IdC("0msg") :: Nil), UndefinedC())
+      case MethodExt(name, args, body) :: tail => IfC(EqStrC(StringC(name), IdC("0msg")), FdC(args, desugar(body)), generateIfStatments(tail))
+    }
+  }
+
+  def generateIfStatments(methods: List[MethodExt]): IfC = {
+    methods match {
+      case Nil => IfC(UndefinedC(), UndefinedC(), UndefinedC())
+      case MethodExt(name, args, body) :: tail => IfC(EqStrC(StringC(name), IdC("0msg")), FdC(args, desugar(body)), generateIfStatments(tail))
+    }
+  }
+
+  //this is broken idk y
   def LetRecExtConvert(binds: List[LetBindExt], body: ExprExt): ExprC = {
     SeqC(AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, UninitializedC()), binds.map { case LetBindExt(s, e) => UninitializedC() }), AppC(FdC(binds.map { case LetBindExt(s, e) => s }, desugar(body)), binds.map { case LetBindExt(s, e) => desugar(e) }))
   }
+
 
   // call by value Y its actually Z because its eager
   //Y combinator: (lambda (f) ((lambda (x) (x x)) (lambda (x) (f (lambda (y) ((x x) y))))))
@@ -108,11 +177,11 @@ object Desugar {
     }
   }
 
-  def makebody(binds: List[LetBindExt], body: ExprC): ExprC =
+  def createLecRec(binds: List[LetBindExt], body: ExprC): ExprC =
     binds match {
       case Nil => body
-      case LetBindExt(n, v) :: tail =>
-        SeqC(SetC(n, desugar(v)), makebody(tail, body))
+      case LetBindExt(name, value) :: tail =>
+        SeqC(SetC(name, desugar(value)), createLecRec(tail, body))
     }
 
 }

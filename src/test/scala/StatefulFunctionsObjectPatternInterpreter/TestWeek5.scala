@@ -1,4 +1,4 @@
-package MutableEnvironmentBasedInterpreter
+package StatefulFunctionsObjectPatternInterpreter
 
 import org.scalatest._
 
@@ -94,60 +94,10 @@ class TestWeek5 extends FunSuite {
   //    }
   //  }
 
-  test("desugar - letrec complex") {
-    assertResult(SeqC(AppC(FdC(List("even", "odd"), ConsC(IdC("even"), ConsC(IdC("odd"), NilC()))), List(UninitializedC(), UninitializedC())), AppC(FdC(List("even", "odd"), ConsC(IdC("even"), ConsC(IdC("odd"), NilC()))), List(FdC(List("x"), IfC(EqNumC(IdC("x"), NumC(0)), TrueC(), IfC(EqNumC(IdC("x"), NumC(1)), FalseC(), AppC(IdC("odd"), List(PlusC(IdC("x"), MultC(NumC(-1), NumC(1)))))))), FdC(List("x"), IfC(EqNumC(IdC("x"), NumC(0)), FalseC(), IfC(EqNumC(IdC("x"), NumC(1)), TrueC(), AppC(IdC("even"), List(PlusC(IdC("x"), MultC(NumC(-1), NumC(1)))))))))))) {
-      desugar(
-        "(letrec ((even (lambda (x) (if (num= x 0) true (if (num= x 1) false (odd (- x 1)))))) (odd (lambda (x) (if (num= x 0) false (if (num= x 1) true (even (- x 1))))))) (list even odd))")
-    }
-  }
-
-  test("Summing values, imperatively") {
-    assertResult(NumV(15)) {
-      interp(
-        """(let
- ((sumto  (box 0))
-  (countv (box 0))
-  (sumv   (box 0))
-  (nop    0)
-  (runsum (box 0))
- )
- (seq
-  (setbox
-   runsum
-   (lambda ()
-     (if (num= (unbox countv) (unbox sumto))
-       nop
-       (seq (seq (setbox countv (+ (unbox countv) 1))
-                 (setbox sumv   (+ (unbox sumv  ) (unbox countv))))
-            ((unbox runsum)))
-     )
-   )
-  )
-  (seq (setbox sumto 5)
-       (seq ((unbox runsum))
-            (unbox sumv)
-       )
-  )
- )
-)
-""")
-    }
-  }
-
-  test("imperative fibonacci"){
-    assertResult(NumV(5)){
-      interp("""(let ((a 0) (b 1) (sum 0))
-  (letrec
-    ((fib
-      (lambda (n)
-        (if (or (num= n 0) (num= n 1))
-          sum
-          (seq (set sum (+ a b))
-          (seq (set a b)
-          (seq (set b sum)
-              (fib (- n 1)))))))))
-      (fib 5)))""")
-    }
-  }
-
+//  test("desugar - letrec complex") {
+//    assertResult(SeqC(AppC(FdC(List("even", "odd"), ConsC(IdC("even"), ConsC(IdC("odd"), NilC()))), List(UninitializedC(), UninitializedC())), AppC(FdC(List("even", "odd"), ConsC(IdC("even"), ConsC(IdC("odd"), NilC()))), List(FdC(List("x"), IfC(EqNumC(IdC("x"), NumC(0)), TrueC(), IfC(EqNumC(IdC("x"), NumC(1)), FalseC(), AppC(IdC("odd"), List(PlusC(IdC("x"), MultC(NumC(-1), NumC(1)))))))), FdC(List("x"), IfC(EqNumC(IdC("x"), NumC(0)), FalseC(), IfC(EqNumC(IdC("x"), NumC(1)), TrueC(), AppC(IdC("even"), List(PlusC(IdC("x"), MultC(NumC(-1), NumC(1)))))))))))) {
+//      desugar(
+//        "(letrec ((even (lambda (x) (if (num= x 0) true (if (num= x 1) false (odd (- x 1)))))) (odd (lambda (x) (if (num= x 0) false (if (num= x 1) true (even (- x 1))))))) (list even odd))")
+//    }
+//  }
 }
