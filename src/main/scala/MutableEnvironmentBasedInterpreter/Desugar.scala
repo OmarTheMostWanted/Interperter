@@ -71,7 +71,7 @@ object Desugar {
       }
 
       case SetExt(id, e) => SetC(id, desugar(e))
-      case RecLamExt(name, param, body) => AppC(Y, List(FdC(List(name), FdC(List(param), desugar(body)))))
+      case RecLamExt(name, param, body) => AppC(Z, List(FdC(List(name), FdC(List(param), desugar(body)))))
 
       case LetRecExt(binds, body) => AppC(FdC(binds.map { case LetBindExt(s, e) => s case _ => throw LetRecException("") }, makebody(binds, desugar(body))),
         binds map (_ => UninitializedC())) //fill with UninitializedC()
@@ -90,7 +90,7 @@ object Desugar {
 
   // call by value Y its actually Z because its eager
   //Y combinator: (lambda (f) ((lambda (x) (x x)) (lambda (x) (f (lambda (y) ((x x) y))))))
-  def Y = desugar(FdExt(List("f"), AppExt(FdExt(List("x"), AppExt(IdExt("x"), List(IdExt("x")))), List(FdExt(List("x"), AppExt(IdExt("f"), List(FdExt(List("y"), AppExt(AppExt(IdExt("x"), List(IdExt("x"))), List(IdExt("y")))))))))))
+  def Z = desugar(FdExt(List("f"), AppExt(FdExt(List("x"), AppExt(IdExt("x"), List(IdExt("x")))), List(FdExt(List("x"), AppExt(IdExt("f"), List(FdExt(List("y"), AppExt(AppExt(IdExt("x"), List(IdExt("x"))), List(IdExt("y")))))))))))
 
   def condEExtDesugar(list: List[(ExprExt, ExprExt)], e: ExprExt): ExprC = {
     list match {

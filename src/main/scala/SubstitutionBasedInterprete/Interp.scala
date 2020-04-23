@@ -103,6 +103,7 @@ object Interp {
       // substitute inside f and all its arguments
       case AppC(f, args) => AppC(substitute(f, binds), args.map(e => substitute(e, binds)))
 
+        // we dont substitute the parameters of the function, because we do that in the application. this will allow for correct name shadowing
       case FdC(parms, body) => FdC(parms, substitute(body, binds.filter(e => !parms.contains(e.name))))
 
       case IdC(y) => {
